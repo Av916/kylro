@@ -1,0 +1,6 @@
+{
+  "extends": "@kylro/typescript-config/bun.json",
+  "compilerOptions": {},
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules"]
+}

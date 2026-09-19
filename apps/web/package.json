@@ -1,5 +1,5 @@
 {
-  "name": "web",
+  "name": "@kylro/web",
   "version": "0.1.0",
   "type": "module",
   "private": true,
@@ -11,14 +11,13 @@
     "check-types": "next typegen && tsc --noEmit"
   },
   "dependencies": {
-    "@repo/ui": "*",
     "next": "16.3.4",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
   "devDependencies": {
-    "@repo/eslint-config": "*",
-    "@repo/typescript-config": "*",
+    "@kylro/eslint-config": "*",
+    "@kylro/typescript-config": "*",
     "@types/node": "26.4.1",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.5",

@@ -1,5 +1,5 @@
 {
-  "extends": "@repo/typescript-config/nextjs.json",
+  "extends": "@kylro/typescript-config/nextjs.json",
   "compilerOptions": {
     "plugins": [
       {

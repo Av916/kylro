@@ -1,0 +1,17 @@
+{
+  "name": "@kylro/api",
+  "module": "server.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun --watch server.ts",
+    "check-types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@kylro/typescript-config": "*",
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^7"
+  }
+}
