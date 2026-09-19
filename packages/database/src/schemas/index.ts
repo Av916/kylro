@@ -1,4 +1,5 @@
-export * from "./auth.js";
-export * from "./workspace.js";
-export * from "./folder.js";
-export * from "./note.js";
+import { pgTable, text } from "drizzle-orm/pg-core";
+
+export const user = pgTable("user", {
+    id: text("id").primaryKey().unique()
+})

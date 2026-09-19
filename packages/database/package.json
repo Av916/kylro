@@ -20,8 +20,9 @@
         "zod": "^4.5.4"
     },
     "devDependencies": {
-        "@kylro/typescript-config": "*",
         "@kylro/eslint-config": "*",
+        "@kylro/typescript-config": "*",
+        "@types/bun": "^1.4.2",
         "@types/node": "^26.4.1",
         "@types/pg": "^8.23.1",
         "drizzle-kit": "1.0.0-rc.4",
