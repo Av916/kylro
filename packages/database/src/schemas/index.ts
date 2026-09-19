@@ -1,7 +1,10 @@
-import { pgTable, text } from "drizzle-orm/pg-core";
-
-export const user = pgTable("user", {
-    id: text("a").primaryKey().unique(),
-    username: text("user_name").unique(),
-    password: text("password"),
-})
+export * from "./user"
+export * from "./account"
+export * from "./session"
+export * from "./magic-link-token"
+export * from "./workspace"
+export * from "./workspace-member"
+export * from "./project"
+export * from "./project-member"
+export * from "./issue";
+export * from "./comment"
