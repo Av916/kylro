@@ -8,11 +8,11 @@ import env from "./src/shared/config/env.js";
 async function main() {
     try {
         await db.execute("SELECT 1");
-        console.log("✅ Database connected");
+        console.log("Database connected");
 
         const server = http.createServer(createServerApplication());
         server.listen(env.PORT, () => {
-            console.log(`✅ Server started on PORT: ${env.PORT}`);
+            console.log(`Server started on PORT: ${env.PORT}`);
         });
     } catch (err) {
         console.error(err);
