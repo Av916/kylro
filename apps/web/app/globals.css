@@ -1,24 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Caveat:wght@400;500;600;700&family=Kalam:wght@400;700&family=Patrick+Hand&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@100..900&display=swap');
+@import "tailwindcss";
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
+  --background: #faf8f5;
+  --foreground: #1f1f1e;
+  --paper: #faf8f5;
+  --paper-card: #fdfcf9;
+  --paper-subtle: #f2efe9;
+  --graphite: #1f1f1e;
+  --graphite-muted: #737067;
+  --graphite-border: #2e2d2a;
 }
 
 body {
   color: var(--foreground);
-  background: var(--background);
+  background: #f6f3eb;
+  font-family: 'Patrick Hand', cursive, system-ui, sans-serif;
+}
+
+.font-kalam {
+  font-family: 'Kalam', cursive, sans-serif;
+}
+
+.font-patrick {
+  font-family: 'Patrick Hand', cursive, sans-serif;
+}
+
+.font-caveat {
+  font-family: 'Caveat', cursive, sans-serif;
+}
+
+.font-architect {
+  font-family: 'Architects Daughter', cursive, sans-serif;
+}
+
+.font-playfair {
+  font-family: 'Playfair Display', serif;
+}
+
+.font-inter {
+  font-family: 'Inter', sans-serif;
+}
+
+.sketch-card {
+  border: 1.5px solid #2e2d2a;
+  border-radius: 14px;
+  background-color: #fcfbf8;
+  box-shadow: 2px 2px 0px rgba(46, 45, 42, 0.4);
+}
+
+.sketch-input-field {
+  border: 1.2px solid #5a574f;
+  border-radius: 8px;
+  background-color: #fdfcf9;
+  color: #1f1f1e;
+  transition: all 0.15s ease-in-out;
+}
+
+.sketch-input-field:focus {
+  border-color: #1a1918;
+  outline: none;
+  box-shadow: 1.5px 1.5px 0px #1a1918;
+}
+
+.sketch-hatch-button {
+  background-color: #2b2a28;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.06) 1px,
+    transparent 1px,
+    transparent 3.5px
+  ), repeating-linear-gradient(
+    -45deg,
+    rgba(0, 0, 0, 0.35),
+    rgba(0, 0, 0, 0.35) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  color: #ffffff;
+  border: 1.5px solid #1a1918;
+  border-radius: 8px;
+  box-shadow: 2px 2px 0px rgba(40, 38, 35, 0.85);
+  transition: all 0.1s ease-in-out;
+}
+
+.sketch-hatch-button:hover:not(:disabled) {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px rgba(40, 38, 35, 0.85);
+  background-color: #242321;
+}
+
+.sketch-hatch-button:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px rgba(40, 38, 35, 0.85);
+}
+
+.sketch-outline-button {
+  background-color: #fcfbf8;
+  color: #1f1f1e;
+  border: 1.2px solid #4a4842;
+  border-radius: 8px;
+  box-shadow: 1.5px 1.5px 0px rgba(46, 45, 42, 0.3);
+  transition: all 0.1s ease-in-out;
+}
+
+.sketch-outline-button:hover:not(:disabled) {
+  background-color: #f5f2e9;
+  transform: translate(0.5px, 0.5px);
+  box-shadow: 1px 1px 0px rgba(46, 45, 42, 0.4);
+}
+
+.sketch-outline-button:active:not(:disabled) {
+  transform: translate(1.5px, 1.5px);
+  box-shadow: 0px 0px 0px rgba(46, 45, 42, 0.4);
 }
 
 * {
@@ -30,21 +125,4 @@ body {
 a {
   color: inherit;
   text-decoration: none;
-}
-
-.imgDark {
-  display: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-
-  .imgLight {
-    display: none;
-  }
-  .imgDark {
-    display: unset;
-  }
 }
