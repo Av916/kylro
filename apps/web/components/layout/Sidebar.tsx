@@ -69,7 +69,7 @@ export function Sidebar({ workspace, open, onToggle }: SidebarProps) {
 
   return (
     <aside
-      className="hidden md:flex flex-col flex-shrink-0 select-none overflow-hidden"
+      className="hidden md:flex flex-col flex-shrink-0 select-none overflow-hidden paper-grain"
       style={{
         width: open ? 260 : 68,
         background: "var(--c-sidebar)",
@@ -178,10 +178,14 @@ export function Sidebar({ workspace, open, onToggle }: SidebarProps) {
                   style={{
                     height: 42,
                     gap: open ? 12 : 0,
-                    padding: open ? "0 12px" : "0",
+                    padding: open
+                      ? (active ? "0 12px 0 9px" : "0 12px")
+                      : "0",
                     justifyContent: open ? "flex-start" : "center",
-                    background: active ? "#E7E5DC" : "transparent",
-                    border: active ? "1px solid #D0CCC1" : "1px solid transparent",
+                    background: "transparent",
+                    border: "none",
+                    borderLeft: active ? "3px solid var(--c-accent)" : "3px solid transparent",
+                    borderRadius: active ? "0 8px 8px 0" : "8px",
                     color: active ? "var(--c-ink)" : "var(--c-ink-3)",
                     fontWeight: active ? 500 : 400,
                     fontSize: 14,

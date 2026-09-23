@@ -51,7 +51,7 @@ export function ProjectCard({ project, index = 0 }: { project: any; index?: numb
   return (
     <Link href={`/projects/${project.id}`} className="block group">
       <div
-        className="k-card-hover relative overflow-hidden flex flex-col justify-between"
+        className="k-card-lift paper-grain relative overflow-hidden flex flex-col justify-between"
         style={{ padding: 24, minHeight: 165 }}
       >
         {/* Three-dot — visible on hover */}

@@ -163,7 +163,7 @@ export default function WorkspacePage() {
     <div className="flex h-full k-fade-in" style={{ minHeight: "100%" }}>
 
       {/* ── Column 2: Main content ── */}
-      <div className="flex-1 min-w-0 overflow-y-auto" style={{ padding: 36 }}>
+      <div className="flex-1 min-w-0 overflow-y-auto paper-grain" style={{ padding: 36 }}>
 
         {/* Welcome section */}
         <div className="relative mb-8">
@@ -174,7 +174,7 @@ export default function WorkspacePage() {
 
           {/* Greeting */}
           <h1
-            className="font-sketch leading-tight"
+            className="font-sketch leading-tight pencil-underline"
             style={{ fontSize: 42, fontWeight: 500, color: "var(--c-ink)", marginBottom: 8 }}
           >
             {greeting()}, {firstName}.
@@ -199,6 +199,9 @@ export default function WorkspacePage() {
           <WorkspaceStats projectsCount={projects.length} membersCount={1} />
         </div>
 
+        {/* Pencil dashed divider */}
+        <hr className="pencil-divider" style={{ marginBottom: 32 }} />
+
         {/* Projects grid */}
         <div style={{ marginBottom: 36 }}>
           <ProjectGrid projects={projects} workspaceId={workspace.id} onRefresh={load} />
@@ -207,7 +210,7 @@ export default function WorkspacePage() {
 
       {/* ── Column 3: Right panel (340px fixed) ── */}
       <aside
-        className="hidden lg:flex flex-col flex-shrink-0 overflow-y-auto"
+        className="hidden lg:flex flex-col flex-shrink-0 overflow-y-auto paper-grain"
         style={{
           width: 340,
           background: "var(--c-sidebar)",
@@ -217,12 +220,12 @@ export default function WorkspacePage() {
         }}
       >
         {/* Recent Activity card */}
-        <div className="k-card" style={{ padding: 24 }}>
+        <div className="k-card-lift paper-grain" style={{ padding: 24 }}>
           <RecentActivity />
         </div>
 
         {/* Quick Actions card */}
-        <div className="k-card" style={{ padding: 24 }}>
+        <div className="k-card-lift paper-grain" style={{ padding: 24 }}>
           <QuickActions />
         </div>
 

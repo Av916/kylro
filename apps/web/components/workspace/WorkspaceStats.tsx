@@ -6,10 +6,11 @@ function Sparkline({ up }: { up: boolean }) {
   return (
     <svg width="60" height="28" viewBox="0 0 60 28" fill="none">
       {up ? (
-        <polyline points="2,24 14,17 26,20 38,11 50,14 58,5"
+        /* Slightly irregular points for a hand-drawn feel */
+        <polyline points="2,24 13,16 25,19 36,10 48,14 58,4"
           stroke="var(--c-ink-4)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
       ) : (
-        <polyline points="2,5 14,10 26,7 38,16 50,12 58,22"
+        <polyline points="2,5 13,11 25,7 36,16 48,12 58,22"
           stroke="var(--c-ink-4)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
       )}
     </svg>
@@ -77,25 +78,28 @@ export function WorkspaceStats({
       {STATS.map((stat, i) => (
         <div
           key={stat.label}
-          className="k-card"
+          /* paper-grain adds SVG noise texture; k-card-lift gives pencil bottom-edge shadow */
+          className="k-card-lift paper-grain"
           style={{ padding: 24, height: 150, display: "flex", flexDirection: "column", justifyContent: "space-between" }}
         >
           {/* Top row: icon + label + sparkline */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="k-icon-box">{stat.icon}</div>
-              <span className="text-[13px] font-medium" style={{ color: "var(--c-ink-3)" }}>
+              <span style={{ fontSize: 13, fontWeight: 500, color: "var(--c-ink-3)" }}>
                 {stat.label}
               </span>
             </div>
             <Sparkline up={stat.up} />
           </div>
 
-          {/* Bottom: big number + trend */}
+          {/* Bottom: big hatched number + trend */}
           <div>
-            <p className="font-sketch leading-none" style={{ fontSize: 44, color: "var(--c-ink)", fontWeight: 500 }}>
+            {/* pencil-hatch puts subtle diagonal lines behind the number */}
+            <span className="pencil-hatch font-sketch leading-none"
+              style={{ fontSize: 44, color: "var(--c-ink)", fontWeight: 600, display: "inline-block" }}>
               {values[i]}
-            </p>
+            </span>
             <p className="text-[12px] mt-1 font-mono" style={{ color: "var(--c-ink-4)" }}>
               {stat.trend}
             </p>

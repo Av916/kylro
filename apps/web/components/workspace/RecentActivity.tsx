@@ -68,7 +68,7 @@ export function RecentActivity() {
         {/* Vertical connector line */}
         <div
           className="absolute top-4 bottom-4"
-          style={{ left: 13, width: 1, background: "var(--c-border)" }}
+          style={{ left: 13, width: 1, background: "none", borderLeft: "1.5px dashed var(--c-border)" }}
         />
 
         <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
