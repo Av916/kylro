@@ -3,199 +3,112 @@
 import React, { useState } from "react";
 import { createProject } from "../../lib/api";
 
-const ACCENT_COLORS = [
-    { name: "Indigo", bg: "rgba(99, 102, 241, 0.15)", border: "rgba(99, 102, 241, 0.4)", text: "#818cf8" },
-    { name: "Cyan", bg: "rgba(6, 182, 212, 0.15)", border: "rgba(6, 182, 212, 0.4)", text: "#22d3ee" },
-    { name: "Violet", bg: "rgba(139, 92, 246, 0.15)", border: "rgba(139, 92, 246, 0.4)", text: "#a78bfa" },
-    { name: "Emerald", bg: "rgba(16, 185, 129, 0.15)", border: "rgba(16, 185, 129, 0.4)", text: "#34d399" },
-    { name: "Amber", bg: "rgba(245, 158, 11, 0.15)", border: "rgba(245, 158, 11, 0.4)", text: "#fbbf24" },
-    { name: "Rose", bg: "rgba(244, 63, 94, 0.15)", border: "rgba(244, 63, 94, 0.4)", text: "#fb7185" },
-];
-
 const TEMPLATES = [
-    { name: "Web Application", desc: "Next.js / React app with UI components" },
-    { name: "API & Backend", desc: "Express / Node / Database service" },
-    { name: "Full-Stack Monorepo", desc: "Integrated client, API, and shared packages" },
+  { name: "Web Application",    desc: "Next.js / React with UI components" },
+  { name: "API & Backend",      desc: "Express / Node / Database service" },
+  { name: "Full-Stack Monorepo", desc: "Client, API, and shared packages" },
 ];
 
 export function CreateProjectDialog({
-    workspaceId,
-    onClose,
-    onSuccess,
-}: {
-    workspaceId: string;
-    onClose: () => void;
-    onSuccess: () => void;
-}) {
-    const [name, setName] = useState("");
-    const [selectedColor, setSelectedColor] = useState(0);
-    const [selectedTemplate, setSelectedTemplate] = useState(0);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
+  workspaceId, onClose, onSuccess,
+}: { workspaceId: string; onClose: () => void; onSuccess: () => void }) {
+  const [name, setName]           = useState("");
+  const [tmpl, setTmpl]           = useState(0);
+  const [loading, setLoading]     = useState(false);
+  const [error, setError]         = useState("");
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        const trimmed = name.trim();
-        if (!trimmed) return;
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const t = name.trim();
+    if (!t) return;
+    setLoading(true);
+    setError("");
+    try {
+      await createProject(workspaceId, { name: t });
+      onSuccess();
+      onClose();
+    } catch (err: any) {
+      setError(err.message || "Failed to create project.");
+      setLoading(false);
+    }
+  };
 
-        setLoading(true);
-        setError("");
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 k-fade-in"
+      style={{ background: "rgba(37,37,34,0.35)", backdropFilter: "blur(3px)" }}
+    >
+      <div
+        className="w-full max-w-md relative"
+        style={{
+          background: "var(--c-card)",
+          border: "1px solid var(--c-border)",
+          borderRadius: 16,
+          boxShadow: "0 12px 40px rgba(37,37,34,0.16)",
+          padding: 28,
+        }}
+        onClick={e => e.stopPropagation()}
+      >
+        <button onClick={onClose} className="absolute top-5 right-5 flex items-center justify-center rounded-lg transition-colors"
+          style={{ width: 28, height: 28, color: "var(--c-ink-3)" }} aria-label="Close">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+            strokeLinecap="round" strokeLinejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
 
-        try {
-            await createProject(workspaceId, { name: trimmed });
-            onSuccess();
-            onClose();
-        } catch (err: any) {
-            setError(err.message || "Failed to create project. Please try again.");
-            setLoading(false);
-        }
-    };
+        <h2 className="text-[18px] font-semibold mb-1" style={{ color: "var(--c-ink)" }}>Create new project</h2>
+        <p className="text-[13px] mb-6" style={{ color: "var(--c-ink-3)" }}>
+          Initialize a project for tracking, boards, and sprints.
+        </p>
 
-    return (
-        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 studio-fade-in">
-            <div
-                className="studio-card w-full max-w-md p-6 bg-zinc-900/95 border border-zinc-800 shadow-2xl relative"
-                onClick={(e) => e.stopPropagation()}
-            >
-                {/* Close Button */}
-                <button
-                    onClick={onClose}
-                    className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-100 p-1.5 rounded-lg hover:bg-zinc-800 transition-colors"
-                    aria-label="Close dialog"
-                >
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18" />
-                        <line x1="6" y1="6" x2="18" y2="18" />
-                    </svg>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block text-[12px] font-medium mb-1.5" style={{ color: "var(--c-ink-2)" }} htmlFor="pname">
+              Project name
+            </label>
+            <input id="pname" type="text" value={name} onChange={e => setName(e.target.value)}
+              placeholder="e.g. Core Engine, Web Client…"
+              className="k-input w-full px-3.5 py-2.5 text-[14px]" autoFocus disabled={loading} />
+            {error && <p className="text-[12px] mt-1.5 font-medium" style={{ color: "#7A4F1E" }}>{error}</p>}
+          </div>
+
+          <div>
+            <label className="block text-[12px] font-medium mb-2" style={{ color: "var(--c-ink-2)" }}>Template</label>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {TEMPLATES.map((t, i) => (
+                <button key={t.name} type="button" onClick={() => setTmpl(i)}
+                  className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-[10px] text-left transition-all"
+                  style={{
+                    border: `1px solid ${tmpl === i ? "var(--c-accent)" : "var(--c-border)"}`,
+                    background: tmpl === i ? "var(--c-accent-soft)" : "var(--c-card)",
+                    color: tmpl === i ? "var(--c-ink)" : "var(--c-ink-2)",
+                    fontSize: 13,
+                    fontFamily: "inherit",
+                  }}>
+                  <div>
+                    <p className="font-medium">{t.name}</p>
+                    <p className="text-[11px] mt-0.5" style={{ color: "var(--c-ink-4)" }}>{t.desc}</p>
+                  </div>
+                  <div className="w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 ml-3"
+                    style={{ borderColor: tmpl === i ? "var(--c-accent)" : "var(--c-border)" }}>
+                    {tmpl === i && <span className="w-2 h-2 rounded-full" style={{ background: "var(--c-accent)" }} />}
+                  </div>
                 </button>
-
-                {/* Header */}
-                <div className="mb-5">
-                    <div className="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mb-3">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <line x1="12" y1="5" x2="12" y2="19" />
-                            <line x1="5" y1="12" x2="19" y2="12" />
-                        </svg>
-                    </div>
-                    <h2 className="text-[19px] font-bold text-zinc-100 leading-tight">
-                        Create new project
-                    </h2>
-                    <p className="text-[12px] text-zinc-400 mt-1">
-                        Initialize a project for sprint tracking, Kanban boards, and issues.
-                    </p>
-                </div>
-
-                {/* Form */}
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    {/* Project Name */}
-                    <div>
-                        <label
-                            htmlFor="project-name"
-                            className="block text-[12px] font-medium text-zinc-200 mb-1.5"
-                        >
-                            Project name
-                        </label>
-                        <input
-                            type="text"
-                            id="project-name"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            className="studio-input w-full px-3.5 py-2 text-[13px] placeholder-zinc-500"
-                            placeholder="e.g. Core Engine, Web Client, Mobile App"
-                            autoFocus
-                            disabled={loading}
-                        />
-                        {error && (
-                            <p className="text-[12px] text-rose-400 mt-1.5 font-medium">
-                                {error}
-                            </p>
-                        )}
-                    </div>
-
-                    {/* Template Picker */}
-                    <div>
-                        <label className="block text-[12px] font-medium text-zinc-200 mb-1.5">
-                            Workspace Template
-                        </label>
-                        <div className="space-y-1.5">
-                            {TEMPLATES.map((tmpl, idx) => (
-                                <button
-                                    key={tmpl.name}
-                                    type="button"
-                                    onClick={() => setSelectedTemplate(idx)}
-                                    className={`w-full text-left p-2.5 rounded-lg border text-[12px] transition-all flex items-center justify-between ${selectedTemplate === idx
-                                            ? "bg-indigo-500/10 border-indigo-500/40 text-zinc-100"
-                                            : "bg-zinc-950/60 border-zinc-800 text-zinc-400 hover:border-zinc-700"
-                                        }`}
-                                >
-                                    <div>
-                                        <p className="font-medium">{tmpl.name}</p>
-                                        <p className="text-[10px] text-zinc-500 mt-0.5">{tmpl.desc}</p>
-                                    </div>
-                                    <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedTemplate === idx
-                                            ? "border-indigo-400 bg-indigo-500"
-                                            : "border-zinc-700"
-                                        }`}>
-                                        {selectedTemplate === idx && <span className="w-1.5 h-1.5 rounded-full bg-white" />}
-                                    </div>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Color Accent Picker */}
-                    <div>
-                        <label className="block text-[12px] font-medium text-zinc-200 mb-1.5">
-                            Accent Color
-                        </label>
-                        <div className="grid grid-cols-6 gap-2">
-                            {ACCENT_COLORS.map((col, idx) => (
-                                <button
-                                    key={col.name}
-                                    type="button"
-                                    onClick={() => setSelectedColor(idx)}
-                                    className={`py-1.5 rounded-lg border text-[11px] font-medium flex items-center justify-center transition-all ${selectedColor === idx
-                                            ? "ring-2 ring-indigo-400/80 scale-105"
-                                            : "opacity-75 hover:opacity-100"
-                                        }`}
-                                    style={{ backgroundColor: col.bg, borderColor: col.border, color: col.text }}
-                                >
-                                    <span
-                                        className="w-2.5 h-2.5 rounded-full"
-                                        style={{ backgroundColor: col.text }}
-                                    />
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Actions */}
-                    <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-zinc-800/80">
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="studio-btn-secondary px-4 py-2 text-[12px]"
-                            disabled={loading}
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            className="studio-btn-primary px-5 py-2 text-[12px]"
-                            disabled={loading || !name.trim()}
-                        >
-                            {loading ? (
-                                <span className="flex items-center gap-1.5">
-                                    <span className="w-3 h-3 rounded-full border-2 border-white border-t-transparent animate-spin" />
-                                    Creating…
-                                </span>
-                            ) : (
-                                "Create project →"
-                            )}
-                        </button>
-                    </div>
-                </form>
+              ))}
             </div>
-        </div>
-    );
+          </div>
+
+          <div className="flex items-center justify-end gap-2.5 pt-4" style={{ borderTop: "1px solid var(--c-border)" }}>
+            <button type="button" onClick={onClose}
+              className="k-btn k-btn-ghost px-4 text-[13px]" disabled={loading}>Cancel</button>
+            <button type="submit"
+              className="k-btn k-btn-primary px-5 text-[13px]" disabled={loading || !name.trim()}>
+              {loading ? "Creating…" : "Create project →"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 }

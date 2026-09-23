@@ -1,212 +1,357 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const WORKSPACE_NAV = [
-    {
-        name: "Overview",
-        href: "/workspace",
-        icon: (
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="3" width="7" height="7" rx="1.5" />
-                <rect x="14" y="3" width="7" height="7" rx="1.5" />
-                <rect x="14" y="14" width="7" height="7" rx="1.5" />
-                <rect x="3" y="14" width="7" height="7" rx="1.5" />
-            </svg>
-        ),
-    },
-    {
-        name: "Projects",
-        href: "/workspace#projects",
-        icon: (
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z" />
-            </svg>
-        ),
-    },
-    {
-        name: "Members",
-        href: "/workspace#members",
-        icon: (
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                <circle cx="9" cy="7" r="4" />
-                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-            </svg>
-        ),
-    },
-    {
-        name: "Issues",
-        href: "/workspace#issues",
-        icon: (
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="9" />
-                <path d="m9 12 2 2 4-4" />
-            </svg>
-        ),
-    },
-    {
-        name: "Settings",
-        href: "/workspace#settings",
-        icon: (
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="3" />
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-            </svg>
-        ),
-    },
+const NAV = [
+  {
+    name: "Overview", href: "/workspace",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/>
+        <rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/>
+      </svg>
+    ),
+  },
+  {
+    name: "Projects", href: "/workspace#projects",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/>
+      </svg>
+    ),
+  },
+  {
+    name: "Members", href: "/workspace#members",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+        <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+    ),
+  },
+  {
+    name: "Issues", href: "/workspace#issues",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/>
+      </svg>
+    ),
+  },
+  {
+    name: "Settings", href: "/workspace#settings",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    ),
+  },
 ];
 
-// Mock workspaces to show multi-workspace switcher like the wireframe
-const MOCK_OTHER_WORKSPACES = [
-    { name: "Personal", initial: "P", color: "from-violet-500 to-purple-600" },
-    { name: "Glazzarto", initial: "G", color: "from-emerald-500 to-teal-600" },
-    { name: "Tosh Cafe", initial: "T", color: "from-amber-500 to-orange-600" },
+const WS_LIST = [
+  { name: "Personal",  initial: "P" },
+  { name: "Glazzarto", initial: "G" },
+  { name: "Tosh Cafe", initial: "T" },
 ];
 
-export function Sidebar({ workspace }: { workspace: any }) {
-    const pathname = usePathname();
-    const [wsExpanded, setWsExpanded] = useState(false);
+interface SidebarProps {
+  workspace: any;
+  open: boolean;
+  onToggle: () => void;
+}
 
-    const wsName = workspace?.name || "Kylro";
-    const wsInitial = wsName.charAt(0).toUpperCase();
+export function Sidebar({ workspace, open, onToggle }: SidebarProps) {
+  const pathname = usePathname();
+  const wsName   = workspace?.name ?? "Kylro Engineering";
+  const wsInit   = wsName[0]!.toUpperCase();
 
-    return (
-        <aside className="w-[220px] bg-[#0c0c10] border-r border-zinc-800/70 flex flex-col h-screen flex-shrink-0 hidden md:flex select-none z-20">
-            {/* ── Brand ── */}
-            <div className="px-5 pt-5 pb-4 border-b border-zinc-800/50">
-                <div className="flex items-center gap-2.5 mb-0.5">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-violet-600 text-white flex items-center justify-center font-bold text-sm shadow-md shadow-indigo-500/20 ring-1 ring-white/15 flex-shrink-0">
-                        K
-                    </div>
-                    <div>
-                        <div className="flex items-center gap-1.5">
-                            <span className="font-bold text-[15px] text-zinc-100 tracking-tight leading-none">
-                                Kylro
-                            </span>
-                            <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-indigo-500/15 text-indigo-400 border border-indigo-500/25 leading-none">
-                                beta
-                            </span>
-                        </div>
-                        <p className="text-[10px] text-zinc-500 mt-0.5 leading-tight">
-                            Build together. Make it real.
-                        </p>
-                    </div>
-                </div>
+  return (
+    <aside
+      className="hidden md:flex flex-col flex-shrink-0 select-none overflow-hidden"
+      style={{
+        width: open ? 260 : 68,
+        background: "var(--c-sidebar)",
+        borderRight: "1px solid var(--c-border)",
+        transition: "width 0.25s cubic-bezier(0.4,0,0.2,1)",
+        position: "relative",
+        zIndex: 20,
+      }}
+    >
+      {/* ── Brand + Toggle ── */}
+      <div
+        className="flex items-center flex-shrink-0"
+        style={{
+          height: 72,
+          padding: open ? "0 20px 0 24px" : "0 0 0 0",
+          justifyContent: open ? "space-between" : "center",
+          borderBottom: "1px solid var(--c-border)",
+        }}
+      >
+        {/* Brand — hidden when collapsed */}
+        <div
+          className="flex items-baseline gap-2 overflow-hidden"
+          style={{
+            opacity: open ? 1 : 0,
+            width: open ? "auto" : 0,
+            transition: "opacity 0.2s ease, width 0.25s ease",
+            whiteSpace: "nowrap",
+          }}
+        >
+          <span
+            className="font-sketch leading-none"
+            style={{ fontSize: 26, color: "var(--c-ink)", letterSpacing: "-0.02em" }}
+          >
+            Kylro
+          </span>
+          <span
+            className="text-[10px] font-medium px-1.5 py-0.5 rounded-md"
+            style={{ background: "var(--c-border)", color: "var(--c-ink-3)", fontFamily: "inherit" }}
+          >
+            beta
+          </span>
+        </div>
+
+        {/* Toggle button */}
+        <button
+          onClick={onToggle}
+          aria-label={open ? "Collapse sidebar" : "Expand sidebar"}
+          className="flex items-center justify-center rounded-lg transition-all flex-shrink-0"
+          style={{
+            width: 32,
+            height: 32,
+            color: "var(--c-ink-3)",
+            background: "transparent",
+            border: "1px solid transparent",
+          }}
+          onMouseEnter={e => {
+            const el = e.currentTarget as HTMLElement;
+            el.style.background = "var(--c-hover)";
+            el.style.borderColor = "var(--c-border)";
+          }}
+          onMouseLeave={e => {
+            const el = e.currentTarget as HTMLElement;
+            el.style.background = "transparent";
+            el.style.borderColor = "transparent";
+          }}
+        >
+          {/* Chevron icon — flips direction */}
+          <svg
+            width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+            style={{
+              transform: open ? "rotate(0deg)" : "rotate(180deg)",
+              transition: "transform 0.25s cubic-bezier(0.4,0,0.2,1)",
+            }}
+          >
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
+      </div>
+
+      {/* ── Nav ── */}
+      <nav className="flex-1 overflow-y-auto overflow-x-hidden" style={{ padding: open ? "24px 12px" : "24px 8px" }}>
+
+        {/* Workspace section */}
+        <div style={{ marginBottom: 28 }}>
+          {open && (
+            <p
+              className="text-[10px] font-semibold tracking-[0.1em] mb-2"
+              style={{ color: "var(--c-ink-5)", paddingLeft: 12 }}
+            >
+              WORKSPACE
+            </p>
+          )}
+          <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {NAV.map((item) => {
+              const active = item.href === "/workspace"
+                ? pathname === "/workspace"
+                : pathname.startsWith(item.href.split("#")[0]!) && item.href !== "/workspace";
+
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  title={!open ? item.name : undefined}
+                  className="flex items-center rounded-[10px] transition-all"
+                  style={{
+                    height: 42,
+                    gap: open ? 12 : 0,
+                    padding: open ? "0 12px" : "0",
+                    justifyContent: open ? "flex-start" : "center",
+                    background: active ? "#E7E5DC" : "transparent",
+                    border: active ? "1px solid #D0CCC1" : "1px solid transparent",
+                    color: active ? "var(--c-ink)" : "var(--c-ink-3)",
+                    fontWeight: active ? 500 : 400,
+                    fontSize: 14,
+                  }}
+                >
+                  <span
+                    className="flex-shrink-0"
+                    style={{ color: active ? "var(--c-accent)" : "var(--c-ink-4)" }}
+                  >
+                    {item.icon}
+                  </span>
+                  <span
+                    style={{
+                      opacity: open ? 1 : 0,
+                      width: open ? "auto" : 0,
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      transition: "opacity 0.18s ease",
+                    }}
+                  >
+                    {item.name}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Workspace switcher */}
+        <div>
+          {open && (
+            <div className="flex items-center justify-between mb-2" style={{ paddingLeft: 12, paddingRight: 4 }}>
+              <p className="text-[10px] font-semibold tracking-[0.1em]" style={{ color: "var(--c-ink-5)" }}>
+                YOUR WORKSPACES
+              </p>
+              <button aria-label="Add workspace" style={{ color: "var(--c-ink-4)" }}>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+              </button>
+            </div>
+          )}
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {/* Active workspace */}
+            <div
+              title={!open ? wsName : undefined}
+              className="flex items-center rounded-[10px]"
+              style={{
+                height: 42,
+                gap: open ? 12 : 0,
+                padding: open ? "0 12px" : "0",
+                justifyContent: open ? "flex-start" : "center",
+                background: "#E7E5DC",
+                border: "1px solid #D0CCC1",
+              }}
+            >
+              <div
+                className="flex items-center justify-center rounded-md text-[11px] font-bold flex-shrink-0"
+                style={{ width: 22, height: 22, background: "var(--c-ink)", color: "var(--c-card)" }}
+              >
+                {wsInit}
+              </div>
+              <span
+                className="text-[13px] font-medium truncate"
+                style={{
+                  color: "var(--c-ink)",
+                  opacity: open ? 1 : 0,
+                  width: open ? "auto" : 0,
+                  overflow: "hidden",
+                  whiteSpace: "nowrap",
+                  transition: "opacity 0.18s ease",
+                }}
+              >
+                {wsName}
+              </span>
             </div>
 
-            {/* ── Workspace Nav ── */}
-            <nav className="flex-1 overflow-y-auto py-4 space-y-5">
-                {/* Section: Workspace */}
-                <div className="px-3">
-                    <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500 px-2 mb-2">
-                        Workspace
-                    </p>
-                    <div className="space-y-0.5">
-                        {WORKSPACE_NAV.map((item) => {
-                            const isActive =
-                                item.href === "/workspace"
-                                    ? pathname === "/workspace"
-                                    : pathname.startsWith(item.href.split("#")[0]!) && item.href !== "/workspace";
-                            const isOverview = item.href === "/workspace" && pathname === "/workspace";
-
-                            const active = isOverview || (item.href !== "/workspace" && pathname === item.href.split("#")[0]);
-
-                            return (
-                                <Link
-                                    key={item.name}
-                                    href={item.href}
-                                    className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] transition-all ${
-                                        item.name === "Overview" && pathname === "/workspace"
-                                            ? "bg-zinc-800/80 text-zinc-100 font-medium"
-                                            : "text-zinc-400 hover:bg-zinc-800/40 hover:text-zinc-200"
-                                    }`}
-                                >
-                                    <span
-                                        className={
-                                            item.name === "Overview" && pathname === "/workspace"
-                                                ? "text-zinc-200"
-                                                : "text-zinc-500"
-                                        }
-                                    >
-                                        {item.icon}
-                                    </span>
-                                    {item.name}
-                                </Link>
-                            );
-                        })}
-                    </div>
+            {WS_LIST.map((ws) => (
+              <button
+                key={ws.name}
+                title={!open ? ws.name : undefined}
+                className="flex items-center rounded-[10px] w-full transition-colors"
+                style={{
+                  height: 42,
+                  gap: open ? 12 : 0,
+                  padding: open ? "0 12px" : "0",
+                  justifyContent: open ? "flex-start" : "center",
+                  color: "var(--c-ink-3)",
+                  background: "transparent",
+                  border: "1px solid transparent",
+                }}
+              >
+                <div
+                  className="flex items-center justify-center rounded-md text-[11px] font-semibold flex-shrink-0"
+                  style={{ width: 22, height: 22, border: "1px solid var(--c-border)", color: "var(--c-ink-2)", background: "transparent" }}
+                >
+                  {ws.initial}
                 </div>
+                <span
+                  className="text-[13px] truncate"
+                  style={{
+                    opacity: open ? 1 : 0,
+                    width: open ? "auto" : 0,
+                    overflow: "hidden",
+                    whiteSpace: "nowrap",
+                    transition: "opacity 0.18s ease",
+                  }}
+                >
+                  {ws.name}
+                </span>
+              </button>
+            ))}
 
-                {/* Section: Your Workspaces */}
-                <div className="px-3">
-                    <div className="flex items-center justify-between px-2 mb-2">
-                        <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
-                            Your Workspaces
-                        </p>
-                        <button
-                            className="w-4 h-4 rounded flex items-center justify-center text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/60 transition-colors"
-                            aria-label="Add workspace"
-                        >
-                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                <line x1="12" y1="5" x2="12" y2="19" />
-                                <line x1="5" y1="12" x2="19" y2="12" />
-                            </svg>
-                        </button>
-                    </div>
+            {/* New workspace */}
+            <button
+              title={!open ? "New Workspace" : undefined}
+              className="flex items-center rounded-[10px] w-full transition-colors"
+              style={{
+                height: 42,
+                gap: open ? 12 : 0,
+                padding: open ? "0 12px" : "0",
+                justifyContent: open ? "flex-start" : "center",
+                color: "var(--c-ink-4)",
+                background: "transparent",
+                border: "1px solid transparent",
+              }}
+            >
+              <div
+                className="flex items-center justify-center rounded-md flex-shrink-0"
+                style={{ width: 22, height: 22, border: "1.5px dashed var(--c-ink-5)", color: "var(--c-ink-5)" }}
+              >
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+              </div>
+              <span
+                className="text-[13px]"
+                style={{
+                  opacity: open ? 1 : 0,
+                  width: open ? "auto" : 0,
+                  overflow: "hidden",
+                  whiteSpace: "nowrap",
+                  transition: "opacity 0.18s ease",
+                }}
+              >
+                New Workspace
+              </span>
+            </button>
+          </div>
+        </div>
+      </nav>
 
-                    <div className="space-y-0.5">
-                        {/* Current workspace — active */}
-                        <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-zinc-800/60 text-zinc-100">
-                            <div className="w-5 h-5 rounded-md bg-gradient-to-br from-indigo-500 to-cyan-500 text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0">
-                                {wsInitial}
-                            </div>
-                            <span className="text-[13px] font-medium truncate">{wsName}</span>
-                        </div>
-
-                        {/* Other workspaces */}
-                        {MOCK_OTHER_WORKSPACES.map((ws) => (
-                            <button
-                                key={ws.name}
-                                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-zinc-400 hover:bg-zinc-800/40 hover:text-zinc-200 transition-all text-[13px]"
-                            >
-                                <div className={`w-5 h-5 rounded-md bg-gradient-to-br ${ws.color} text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0`}>
-                                    {ws.initial}
-                                </div>
-                                <span className="truncate">{ws.name}</span>
-                            </button>
-                        ))}
-
-                        {/* New workspace */}
-                        <button className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-zinc-500 hover:bg-zinc-800/40 hover:text-zinc-300 transition-all text-[13px]">
-                            <div className="w-5 h-5 rounded-md border border-dashed border-zinc-600 flex items-center justify-center flex-shrink-0">
-                                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                    <line x1="12" y1="5" x2="12" y2="19" />
-                                    <line x1="5" y1="12" x2="19" y2="12" />
-                                </svg>
-                            </div>
-                            <span>New Workspace</span>
-                        </button>
-                    </div>
-                </div>
-            </nav>
-
-            {/* ── Bottom illustration area ── */}
-            <div className="px-5 pb-5 pt-4 border-t border-zinc-800/50">
-                {/* Mountain illustration (SVG) */}
-                <div className="flex justify-center mb-2 opacity-25">
-                    <svg width="90" height="44" viewBox="0 0 90 44" fill="none">
-                        <path d="M0 44 L20 18 L32 28 L45 8 L58 22 L70 12 L90 44 Z" fill="currentColor" className="text-zinc-400" />
-                        <path d="M40 44 L55 20 L70 32 L90 10 L90 44 Z" fill="currentColor" className="text-zinc-600" opacity="0.6" />
-                    </svg>
-                </div>
-                <p className="text-[10px] text-zinc-500 text-center italic leading-tight">
-                    "Small progress builds big things."
-                </p>
-            </div>
-        </aside>
-    );
+      {/* ── Bottom decoration — only when open ── */}
+      {open && (
+        <div
+          className="px-6 pb-6 pt-5 flex flex-col items-center flex-shrink-0"
+          style={{ borderTop: "1px solid var(--c-border)" }}
+        >
+          <svg width="100" height="48" viewBox="0 0 110 52" fill="none" style={{ opacity: 0.25, marginBottom: 8 }}>
+            <path d="M2 52 L24 18 L38 30 L55 5 L72 22 L88 9 L108 52 Z"
+              fill="none" stroke="var(--c-ink)" strokeWidth="1.4" strokeLinejoin="round"/>
+            <path d="M50 11 L55 5 L60 11" fill="none" stroke="var(--c-ink)" strokeWidth="1" strokeLinecap="round"/>
+            <path d="M82 18 L88 9 L94 18" fill="none" stroke="var(--c-ink)" strokeWidth="1" strokeLinecap="round"/>
+          </svg>
+          <p className="font-sketch text-[14px] text-center leading-tight" style={{ color: "var(--c-ink-5)" }}>
+            &ldquo;Small progress builds big things.&rdquo;
+          </p>
+        </div>
+      )}
+    </aside>
+  );
 }
