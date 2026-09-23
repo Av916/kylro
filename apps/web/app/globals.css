@@ -1,119 +1,79 @@
-@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Caveat:wght@400;500;600;700&family=Kalam:wght@400;700&family=Patrick+Hand&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
+/* ═══════════════════════════════════════════════════
+   KYLRO — NEXT-GEN HIGH PERFORMANCE DEVELOPER STUDIO
+   Obsidian surfaces, luminous neon accents, frosted glass.
+   ═══════════════════════════════════════════════════ */
+
 :root {
-  --background: #faf8f5;
-  --foreground: #1f1f1e;
-  --paper: #faf8f5;
-  --paper-card: #fdfcf9;
-  --paper-subtle: #f2efe9;
-  --graphite: #1f1f1e;
-  --graphite-muted: #737067;
-  --graphite-border: #2e2d2a;
+  /* Obsidian Base Surfaces */
+  --bg-canvas: #09090b;
+  --bg-surface: #111115;
+  --bg-surface-elevated: #18181f;
+  --bg-card: rgba(18, 18, 24, 0.78);
+  --bg-card-hover: rgba(26, 26, 35, 0.9);
+  --bg-overlay: rgba(9, 9, 11, 0.82);
+
+  /* Precise Borders */
+  --border-subtle: rgba(255, 255, 255, 0.07);
+  --border-default: rgba(255, 255, 255, 0.12);
+  --border-active: rgba(255, 255, 255, 0.22);
+  --border-glow: rgba(99, 102, 241, 0.35);
+
+  /* Text & Ink */
+  --text-primary: #f4f4f6;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --text-dim: #52525b;
+
+  /* Accent Vibrance */
+  --accent-indigo: #6366f1;
+  --accent-violet: #8b5cf6;
+  --accent-cyan: #06b6d4;
+  --accent-emerald: #10b981;
+  --accent-amber: #f59e0b;
+  --accent-rose: #f43f5e;
+
+  /* Legacy aliases for backwards compatibility */
+  --paper: #09090b;
+  --paper-rgb: 9, 9, 11;
+  --paper-warm: #111115;
+  --paper-card: #18181f;
+  --paper-card-subtle: rgba(24, 24, 31, 0.85);
+  --paper-hover: #1f1f28;
+  --paper-border: rgba(255, 255, 255, 0.08);
+
+  --pencil: #27272a;
+  --pencil-light: #3f3f46;
+  --pencil-dark: #71717a;
+  --pencil-shadow: rgba(0, 0, 0, 0.4);
+
+  --ink: #f4f4f6;
+  --ink-dark: #fafafa;
+  --ink-muted: #a1a1aa;
+  --ink-faint: #71717a;
+  --ink-light: #52525b;
+
+  --rust: #f43f5e;
+  --rust-light: rgba(244, 63, 94, 0.12);
+  --sage: #10b981;
+  --sage-light: rgba(16, 185, 129, 0.12);
+  --amber: #f59e0b;
+  --amber-light: rgba(245, 158, 11, 0.12);
+  --slate: #06b6d4;
+  --slate-light: rgba(6, 182, 212, 0.12);
 }
 
-body {
-  color: var(--foreground);
-  background: #f6f3eb;
-  font-family: 'Patrick Hand', cursive, system-ui, sans-serif;
-}
+@theme {
+  --font-geist: var(--font-geist-sans), 'Inter', sans-serif;
+  --font-geist-mono: var(--font-geist-mono), 'JetBrains Mono', monospace;
+  --font-sans: var(--font-geist-sans), 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: var(--font-geist-mono), 'JetBrains Mono', monospace;
 
-.font-kalam {
-  font-family: 'Kalam', cursive, sans-serif;
-}
-
-.font-patrick {
-  font-family: 'Patrick Hand', cursive, sans-serif;
-}
-
-.font-caveat {
-  font-family: 'Caveat', cursive, sans-serif;
-}
-
-.font-architect {
-  font-family: 'Architects Daughter', cursive, sans-serif;
-}
-
-.font-playfair {
-  font-family: 'Playfair Display', serif;
-}
-
-.font-inter {
-  font-family: 'Inter', sans-serif;
-}
-
-.sketch-card {
-  border: 1.5px solid #2e2d2a;
-  border-radius: 14px;
-  background-color: #fcfbf8;
-  box-shadow: 2px 2px 0px rgba(46, 45, 42, 0.4);
-}
-
-.sketch-input-field {
-  border: 1.2px solid #5a574f;
-  border-radius: 8px;
-  background-color: #fdfcf9;
-  color: #1f1f1e;
-  transition: all 0.15s ease-in-out;
-}
-
-.sketch-input-field:focus {
-  border-color: #1a1918;
-  outline: none;
-  box-shadow: 1.5px 1.5px 0px #1a1918;
-}
-
-.sketch-hatch-button {
-  background-color: #2b2a28;
-  background-image: repeating-linear-gradient(
-    45deg,
-    rgba(255, 255, 255, 0.06),
-    rgba(255, 255, 255, 0.06) 1px,
-    transparent 1px,
-    transparent 3.5px
-  ), repeating-linear-gradient(
-    -45deg,
-    rgba(0, 0, 0, 0.35),
-    rgba(0, 0, 0, 0.35) 1px,
-    transparent 1px,
-    transparent 3px
-  );
-  color: #ffffff;
-  border: 1.5px solid #1a1918;
-  border-radius: 8px;
-  box-shadow: 2px 2px 0px rgba(40, 38, 35, 0.85);
-  transition: all 0.1s ease-in-out;
-}
-
-.sketch-hatch-button:hover:not(:disabled) {
-  transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0px rgba(40, 38, 35, 0.85);
-  background-color: #242321;
-}
-
-.sketch-hatch-button:active:not(:disabled) {
-  transform: translate(2px, 2px);
-  box-shadow: 0px 0px 0px rgba(40, 38, 35, 0.85);
-}
-
-.sketch-outline-button {
-  background-color: #fcfbf8;
-  color: #1f1f1e;
-  border: 1.2px solid #4a4842;
-  border-radius: 8px;
-  box-shadow: 1.5px 1.5px 0px rgba(46, 45, 42, 0.3);
-  transition: all 0.1s ease-in-out;
-}
-
-.sketch-outline-button:hover:not(:disabled) {
-  background-color: #f5f2e9;
-  transform: translate(0.5px, 0.5px);
-  box-shadow: 1px 1px 0px rgba(46, 45, 42, 0.4);
-}
-
-.sketch-outline-button:active:not(:disabled) {
-  transform: translate(1.5px, 1.5px);
-  box-shadow: 0px 0px 0px rgba(46, 45, 42, 0.4);
+  --color-canvas: var(--bg-canvas);
+  --color-surface: var(--bg-surface);
+  --color-surface-elevated: var(--bg-surface-elevated);
 }
 
 * {
@@ -122,7 +82,361 @@ body {
   margin: 0;
 }
 
+html,
+body {
+  background-color: #09090b;
+  color: #f4f4f6;
+  font-family: var(--font-geist-sans), 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 a {
   color: inherit;
   text-decoration: none;
+}
+
+/* ─── Modern Studio Glassmorphism Cards ─── */
+.studio-card {
+  background: rgba(18, 18, 24, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.studio-card-interactive {
+  background: rgba(18, 18, 24, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.35), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.studio-card-interactive:hover {
+  border-color: rgba(99, 102, 241, 0.35);
+  background: rgba(24, 24, 32, 0.88);
+  box-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.6), 0 0 20px 2px rgba(99, 102, 241, 0.14), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+.studio-card-dashed {
+  border: 1.5px dashed rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  background: rgba(18, 18, 24, 0.35);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.studio-card-dashed:hover {
+  border-color: rgba(99, 102, 241, 0.45);
+  background: rgba(24, 24, 34, 0.65);
+  box-shadow: 0 6px 24px -2px rgba(0, 0, 0, 0.5), 0 0 20px 1px rgba(99, 102, 241, 0.1);
+  transform: translateY(-1px);
+}
+
+/* ─── Studio Buttons ─── */
+.studio-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 9px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 10px rgba(99, 102, 241, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.studio-btn-primary:hover:not(:disabled) {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.42);
+}
+
+.studio-btn-primary:active:not(:disabled) {
+  transform: translateY(0px) scale(0.98);
+}
+
+.studio-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.studio-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #e4e4e7;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 9px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.studio-btn-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.09);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px);
+}
+
+.studio-btn-secondary:active:not(:disabled) {
+  transform: translateY(0px) scale(0.98);
+}
+
+.studio-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: #a1a1aa;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.studio-btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #f4f4f6;
+}
+
+/* ─── Studio Inputs ─── */
+.studio-input {
+  background: rgba(14, 14, 18, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 9px;
+  color: #f4f4f6;
+  font-family: inherit;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.studio-input:focus {
+  border-color: rgba(99, 102, 241, 0.6);
+  outline: none;
+  background: rgba(18, 18, 24, 0.95);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
+}
+
+/* ─── Badges & Status ─── */
+.studio-badge {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #a1a1aa;
+}
+
+/* ─── Glow Accents ─── */
+.studio-glow-indigo {
+  box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.35);
+}
+
+.studio-glow-cyan {
+  box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.35);
+}
+
+.studio-glow-emerald {
+  box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.35);
+}
+
+/* ─── Sleek Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+/* ─── Animations ─── */
+@keyframes studio-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.studio-fade-in {
+  animation: studio-fade-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pulse-subtle {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.65;
+    transform: scale(0.97);
+  }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ═══════════════════════════════════════════════════
+   BACKWARDS COMPATIBILITY WRAPPERS
+   Ensures non-workspace views render gracefully.
+   ═══════════════════════════════════════════════════ */
+.sketch-card {
+  background: rgba(18, 18, 24, 0.75);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  color: #f4f4f6;
+}
+
+.sketch-card-lift {
+  background: rgba(18, 18, 24, 0.75);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  color: #f4f4f6;
+  transition: all 0.22s ease;
+}
+
+.sketch-card-lift:hover {
+  border-color: rgba(99, 102, 241, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.5);
+}
+
+.sketch-card-dashed {
+  border: 1.5px dashed rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  background: rgba(18, 18, 24, 0.35);
+  color: #f4f4f6;
+  transition: all 0.2s ease;
+}
+
+.sketch-card-dashed:hover {
+  border-color: rgba(99, 102, 241, 0.4);
+  background: rgba(24, 24, 34, 0.65);
+}
+
+.sketch-input {
+  background: rgba(14, 14, 18, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9px;
+  color: #f4f4f6;
+}
+
+.sketch-input:focus {
+  border-color: rgba(99, 102, 241, 0.6);
+  outline: none;
+}
+
+.sketch-btn-dark {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 9px;
+  font-weight: 500;
+  box-shadow: 0 2px 10px rgba(99, 102, 241, 0.3);
+}
+
+.sketch-btn-dark:hover {
+  filter: brightness(1.1);
+}
+
+.sketch-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #e4e4e7;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 9px;
+}
+
+.sketch-btn-outline:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: #ffffff;
+}
+
+.sketch-icon-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a1a1aa;
+  transition: all 0.18s ease;
+}
+
+.sketch-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #f4f4f6;
+}
+
+.sketch-badge {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #a1a1aa;
+}
+
+.sketch-fade-in {
+  animation: studio-fade-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.sketch-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: sketch-spin 0.65s linear infinite;
+}
+
+@keyframes sketch-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

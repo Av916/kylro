@@ -94,7 +94,7 @@ export class AuthController {
             });
 
             res.cookie(SESSION_COOKIE_NAME, sessionToken, getSessionCookieOptions());
-            return res.redirect(`${env.CLIENT_URL}/dashboard`);
+            return res.redirect(`${env.CLIENT_URL}/workspace`);
         } catch (err) {
             next(err);
         }
