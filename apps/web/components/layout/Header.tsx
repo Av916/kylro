@@ -136,10 +136,26 @@ export function Header({ user, workspace, sidebarOpen, onToggleSidebar }: Header
         <div className="relative">
           <button
             onClick={() => setOpen(!open)}
-            className="flex items-center gap-2 rounded-xl transition-colors"
-            style={{ height: 38, padding: "0 10px", background: "transparent", border: "1px solid transparent" }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "var(--c-hover)"; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}
+            className="flex items-center rounded-xl transition-all"
+            style={{
+              height: 40,
+              padding: "0 12px",
+              gap: 10,
+              background: open ? "var(--c-hover)" : "transparent",
+              border: open ? "1px solid var(--c-border)" : "1px solid transparent",
+            }}
+            onMouseEnter={e => {
+              const el = e.currentTarget as HTMLElement;
+              el.style.background = "var(--c-hover)";
+              el.style.borderColor = "var(--c-border)";
+            }}
+            onMouseLeave={e => {
+              const el = e.currentTarget as HTMLElement;
+              if (!open) {
+                el.style.background = "transparent";
+                el.style.borderColor = "transparent";
+              }
+            }}
           >
             <div className="flex items-center justify-center rounded-full text-[12px] font-semibold flex-shrink-0"
               style={{ width: 28, height: 28, background: "var(--c-ink)", color: "var(--c-card)" }}>
@@ -148,8 +164,21 @@ export function Header({ user, workspace, sidebarOpen, onToggleSidebar }: Header
             <span className="text-[14px] font-medium hidden sm:inline" style={{ color: "var(--c-ink)" }}>
               {firstName ?? "Account"}
             </span>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--c-ink-4)" }}>
+            <svg
+              width="11"
+              height="11"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{
+                color: "var(--c-ink-4)",
+                transform: open ? "rotate(180deg)" : "rotate(0deg)",
+                transition: "transform 0.2s ease",
+              }}
+            >
               <polyline points="6 9 12 15 18 9"/>
             </svg>
           </button>
@@ -158,32 +187,85 @@ export function Header({ user, workspace, sidebarOpen, onToggleSidebar }: Header
             <>
               <div className="fixed inset-0 z-40" onClick={() => setOpen(false)}/>
               <div
-                className="absolute right-0 mt-1.5 w-52 py-1.5 z-50 k-fade-in"
+                className="absolute right-0 mt-2.5 z-50 k-fade-in overflow-hidden"
                 style={{
+                  width: 270,
                   background: "var(--c-card)",
                   border: "1px solid var(--c-border)",
-                  borderRadius: 12,
-                  boxShadow: "0 8px 28px rgba(37,37,34,0.12)",
+                  borderRadius: 16,
+                  boxShadow: "0 12px 36px rgba(37,37,34,0.14), 0 2px 6px rgba(37,37,34,0.06)",
                 }}
               >
-                <div className="px-4 py-3" style={{ borderBottom: "1px solid var(--c-border)" }}>
-                  <p className="text-[13px] font-semibold truncate" style={{ color: "var(--c-ink)" }}>
-                    {user?.name ?? "Developer"}
-                  </p>
-                  <p className="text-[12px] mt-0.5 truncate font-mono" style={{ color: "var(--c-ink-3)" }}>
-                    {user?.email ?? "dev@kylro.app"}
-                  </p>
+                {/* User info card with generous padding */}
+                <div
+                  className="flex items-center gap-3.5"
+                  style={{
+                    padding: "16px 18px",
+                    borderBottom: "1px solid var(--c-border)",
+                    background: "rgba(0,0,0,0.015)",
+                  }}
+                >
+                  <div
+                    className="flex items-center justify-center rounded-full text-[13px] font-semibold flex-shrink-0"
+                    style={{ width: 38, height: 38, background: "var(--c-ink)", color: "var(--c-card)" }}
+                  >
+                    {initial}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[14px] font-semibold truncate leading-tight" style={{ color: "var(--c-ink)" }}>
+                      {user?.name ?? "Developer"}
+                    </p>
+                    <p className="text-[12px] mt-1 truncate font-mono leading-none" style={{ color: "var(--c-ink-3)" }}>
+                      {user?.email ?? "dev@kylro.app"}
+                    </p>
+                  </div>
                 </div>
-                <Link href="/workspace#settings" onClick={() => setOpen(false)}
-                  className="flex items-center px-4 py-2.5 text-[13px] transition-colors"
-                  style={{ color: "var(--c-ink-2)" }}>
-                  Settings
-                </Link>
-                <Link href="/login" onClick={() => setOpen(false)}
-                  className="flex items-center px-4 py-2.5 text-[13px] transition-colors"
-                  style={{ color: "var(--c-ink-3)" }}>
-                  Sign out
-                </Link>
+
+                {/* Navigation items with comfortable spacing and padding */}
+                <div className="flex flex-col gap-1" style={{ padding: "8px 8px 10px 8px" }}>
+                  <Link
+                    href="/workspace#settings"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-3 rounded-xl transition-colors"
+                    style={{
+                      padding: "10px 14px",
+                      fontSize: 14,
+                      color: "var(--c-ink-2)",
+                    }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "var(--c-hover)"; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+                      style={{ color: "var(--c-ink-3)", flexShrink: 0 }}>
+                      <circle cx="12" cy="12" r="3"/>
+                      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                    <span>Settings</span>
+                  </Link>
+
+                  <Link
+                    href="/login"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-3 rounded-xl transition-colors"
+                    style={{
+                      padding: "10px 14px",
+                      fontSize: 14,
+                      color: "var(--c-ink-3)",
+                    }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "var(--c-hover)"; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+                      style={{ color: "var(--c-ink-4)", flexShrink: 0 }}>
+                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                      <polyline points="16 17 21 12 16 7"/>
+                      <line x1="21" y1="12" x2="9" y2="12"/>
+                    </svg>
+                    <span>Sign out</span>
+                  </Link>
+                </div>
               </div>
             </>
           )}

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Patrick+Hand&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Caveat:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cabin+Sketch:wght@400;700&family=Inter:wght@300;400;500;600;700;800&family=Patrick+Hand&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Caveat:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
 
 /* ══════════════════════════════════════════════
@@ -52,7 +52,7 @@
 }
 
 @theme {
-  --font-sans:   'Patrick Hand', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans:   'Cabin Sketch', 'Patrick Hand', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-sketch: 'Caveat', cursive;
   --font-mono:   'JetBrains Mono', monospace;
 }
@@ -62,7 +62,7 @@
 html, body {
   background-color: var(--c-page);
   color: var(--c-ink);
-  font-family: 'Patrick Hand', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Cabin Sketch', 'Patrick Hand', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 14px;
