@@ -104,7 +104,7 @@ export function LoginPencilSketch() {
                         <Link href="/pricing" className={s.navLink}>Pricing</Link>
                         <Link href="/about" className={s.navLink}>About</Link>
                     </nav>
-                    <Link href="/login" className={s.signInBtn}>Sign in</Link>
+                    <Link href="/signup" className={s.signInBtn}>Sign up</Link>
                 </div>
             </header>
 
