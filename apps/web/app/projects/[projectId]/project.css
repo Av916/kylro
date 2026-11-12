@@ -9,7 +9,7 @@
 .project-shell input, .project-shell select, .project-dialog input, .project-dialog select, .project-dialog textarea { font: inherit; }
 .project-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .project-content { flex: 1; overflow: auto; scroll-behavior: smooth; }
-.project-page { max-width: 1450px; margin: 0 auto; padding: 36px 38px 22px; animation: k-fade-in .25s ease-out; }
+.project-page { max-width: 1450px; margin: 0 auto; padding: 36px 38px 22px; }
 .project-skip { position: fixed; top: -100px; left: 16px; z-index: 100; padding: 12px; background: var(--c-card); border: 1px solid var(--c-accent); border-radius: 8px; }
 .project-skip:focus { top: 10px; }
 .project-sidebar { width: 236px; flex-shrink: 0; height: 100%; background: var(--c-sidebar); border-right: 1px solid var(--c-border); display: flex; flex-direction: column; padding: 26px 16px 15px; overflow-y: auto; }
@@ -326,3 +326,5 @@
  .project-role-guide { gap:16px; }
  .project-role-guide>div:not(:first-child) { border-top:1px dashed var(--c-border); padding-top:10px; }
 }
+
+.page-motion { min-height:100%; }

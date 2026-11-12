@@ -1,13 +1,17 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { PageMotion } from "../motion/PageMotion";
+import { useSidebarMotion } from "../motion/useSidebarMotion";
 import { ProjectHeader } from "../layout/ProjectHeader";
 import { ProjectSidebar } from "../layout/ProjectSidebar";
 import { useSidebarPreference } from "../layout/useSidebarPreference";
 
 export function ProjectShell({ children }: { children: ReactNode }) {
+    const root = useRef<HTMLDivElement>(null);
     const [navigationOpen, setNavigationOpen] = useState(false);
     const { collapsed, setCollapsed, mobile } = useSidebarPreference();
+    useSidebarMotion(root, ".project-sidebar", mobile ? navigationOpen : !collapsed, mobile);
     function closeNavigation() {
         setNavigationOpen(false);
         requestAnimationFrame(() => document.getElementById("project-sidebar-toggle")?.focus());
@@ -27,12 +31,12 @@ export function ProjectShell({ children }: { children: ReactNode }) {
         document.addEventListener("keydown", close);
         return () => document.removeEventListener("keydown", close);
     }, [navigationOpen, mobile]);
-    return <div className={`project-shell${collapsed ? " project-navigation-collapsed" : ""}`}>
+    return <div ref={root} className={`project-shell${collapsed ? " project-navigation-collapsed" : ""}`}>
         <a className="project-skip" href="#project-content">Skip to content</a>
         <ProjectSidebar open={mobile && navigationOpen} onClose={closeNavigation} onCollapse={() => { setCollapsed(true); requestAnimationFrame(() => document.getElementById("project-sidebar-toggle")?.focus()); }} />
         <div className="project-main" inert={mobile && navigationOpen}>
             <ProjectHeader navigationOpen={mobile ? navigationOpen : !collapsed} onOpenNavigation={() => mobile ? setNavigationOpen(value => !value) : setCollapsed(!collapsed)} />
-            <main id="project-content" className="project-content">{children}</main>
+            <main id="project-content" className="project-content"><PageMotion>{children}</PageMotion></main>
         </div>
     </div>;
 }

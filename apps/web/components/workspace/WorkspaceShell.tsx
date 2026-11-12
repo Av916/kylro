@@ -1,8 +1,10 @@
 "use client";
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Bell, CircleCheck, Folder, LayoutGrid, Menu, Plus, Search, Settings, Users, X, LogOut, ArrowUpRight, ChevronRight } from "lucide-react";
+import { PageMotion } from "../motion/PageMotion";
+import { useSidebarMotion } from "../motion/useSidebarMotion";
 import { useSidebarPreference } from "../layout/useSidebarPreference";
 import { useWorkspace } from "./WorkspaceProvider";
 import { WorkspaceForm, type WorkspaceAction } from "./WorkspaceDialogs";
@@ -14,10 +16,12 @@ const Actions = createContext<(action: WorkspaceAction) => void>(() => {});
 export const useWorkspaceAction = () => useContext(Actions);
 const nav = [["", "Overview", LayoutGrid], ["/projects", "Projects", Folder], ["/members", "Members", Users], ["/issues", "Issues", CircleCheck], ["/settings", "Settings", Settings]] as const;
 export function WorkspaceShell({ children }: { children: ReactNode }) {
+    const root = useRef<HTMLDivElement>(null);
     const { user, workspaces, data, loading, error, refresh, select } = useWorkspace();
     const path = usePathname(), router = useRouter();
     const [sidebar, setSidebar] = useState(false);
     const { collapsed, setCollapsed, mobile } = useSidebarPreference();
+    useSidebarMotion(root, ".ws-sidebar", mobile ? sidebar : !collapsed, mobile);
     const [action, setAction] = useState<WorkspaceAction>(null);
     const [search, setSearch] = useState(false), [query, setQuery] = useState("");
     const [notifications, setNotifications] = useState(false), [logoutError, setLogoutError] = useState("");
@@ -28,7 +32,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
         ...data.members.map(m => ({ id: m.userId, title: `${m.name} · ${m.email}`, type: "Member", href: `/workspace/members?q=${encodeURIComponent(m.email)}` })),
     ].filter(r => r.title.toLowerCase().includes(query.trim().toLowerCase())).slice(0, 25) : [];
     async function logout() { try { await workspaceApi.logout(); router.replace("/login"); router.refresh(); } catch (err) { setLogoutError(errorMessage(err)); } }
-    return <Actions.Provider value={setAction}><div className={`ws-shell ${collapsed ? "ws-collapsed" : ""}`}>
+    return <Actions.Provider value={setAction}><div ref={root} className={`ws-shell ${collapsed ? "ws-collapsed" : ""}`}>
         <a className="project-skip" href="#workspace-content">Skip to content</a>
         {sidebar && <button className="ws-sidebar-backdrop" aria-label="Close navigation" onClick={() => setSidebar(false)} />}
         <aside className={`ws-sidebar ${sidebar ? "open" : ""}`}><div className="ws-brand"><Link href="/workspace"><span className="project-brand-icon">k.</span><span>Kylro<span className="project-brand-caption">a little space to build.</span></span></Link><button className="ws-icon" aria-label="Close sidebar" onClick={() => { setSidebar(false); if (!mobile) setCollapsed(true); }}><X size={18} /></button></div>
@@ -38,7 +42,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
             <div className="ws-sidebar-note"><svg viewBox="0 0 150 70" fill="none" aria-hidden="true"><path d="M8 62L39 18l20 17L83 5l26 27 20-13 17 43zM109 32l20-13-3 14" stroke="currentColor" strokeWidth="1.5" /></svg><p>Small progress builds big things.</p></div>
         </aside>
         <div className="ws-main"><header className="ws-header"><button className="ws-icon" aria-label="Toggle navigation" aria-expanded={mobile ? sidebar : !collapsed} onClick={() => { if (mobile) { setSidebar(v => !v); } else setCollapsed(!collapsed); }}><Menu size={19} /></button><div className="ws-breadcrumb"><span>{data?.workspace.name || "Workspace"}</span><ChevronRight size={14} /><strong>{nav.find(([suffix]) => path === `/workspace${suffix}`)?.[1] || "Activity"}</strong></div><button className="ws-search-trigger" onClick={() => setSearch(true)}><Search size={18} /><span>Search projects, issues, members…</span><kbd>Ctrl K</kbd></button><button className="ws-icon" aria-label="Recent workspace updates" onClick={() => setNotifications(true)}><Bell size={20} /></button><details className="ws-account"><summary><span className="ws-avatar">{user.name.charAt(0).toUpperCase()}</span><span>{user.name.split(" ")[0]}</span></summary><div><strong>{user.name}</strong><small>{user.email}</small><Link href="/workspace/settings">Workspace settings</Link><button onClick={() => void logout()}><LogOut size={15} />Sign out</button>{logoutError && <p role="alert">{logoutError}</p>}</div></details></header>
-            <main id="workspace-content" className="ws-content">{error && <div className="ws-error" role="alert">{error}<button className="ws-button secondary" onClick={() => void refresh()}>Retry</button></div>}{loading ? <div className="ws-empty" role="status">Gathering your workspace…</div> : !data && error ? <div className="ws-empty"><p>Could not load this workspace. Retry above or choose another workspace.</p></div> : !data ? <div className="ws-empty"><Folder size={40} /><h1>A little space for big ideas.</h1><p>Create your first workspace to bring projects and people together.</p><button className="ws-button" onClick={() => setAction("workspace")}>Create workspace</button></div> : children}</main>
+            <main id="workspace-content" className="ws-content">{error && <div className="ws-error" role="alert">{error}<button className="ws-button secondary" onClick={() => void refresh()}>Retry</button></div>}{loading ? <div className="ws-empty" role="status">Gathering your workspace…</div> : !data && error ? <div className="ws-empty"><p>Could not load this workspace. Retry above or choose another workspace.</p></div> : !data ? <div className="ws-empty"><Folder size={40} /><h1>A little space for big ideas.</h1><p>Create your first workspace to bring projects and people together.</p><button className="ws-button" onClick={() => setAction("workspace")}>Create workspace</button></div> : <PageMotion key={data.workspace.id}>{children}</PageMotion>}</main>
         </div>
         {action === "project" && data && <CreateProjectDialog workspaceId={data.workspace.id} onClose={() => setAction(null)} onSuccess={() => void refresh()} />}
         {action && action !== "project" && <WorkspaceForm key={`${data?.workspace.id}-${action}`} action={action} onClose={() => setAction(null)} />}

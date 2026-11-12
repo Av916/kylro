@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
+import { gsap } from "gsap";
 import { PanelRightOpen, X } from "lucide-react";
 import Link from "next/link";
 import { WorkspaceActivity } from "./WorkspaceViews";
@@ -13,6 +14,22 @@ export function WorkspaceDrawer() {
   const action = useWorkspaceAction();
   const dialog = useRef<HTMLDialogElement>(null);
   const [open, setOpen] = useState(false);
+
+  useLayoutEffect(() => {
+    if (!open) return;
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (media.matches) return;
+    const context = gsap.context(() => {
+      gsap.from(`.${styles.card}`, {
+        y: 16, rotation: -2, opacity: 0, duration: .55,
+        stagger: .09, ease: "power2.out", transformOrigin: "50% 0%",
+        clearProps: "transform,opacity,transformOrigin",
+      });
+    }, dialog);
+    const reduce = () => { if (media.matches) context.revert(); };
+    media.addEventListener("change", reduce);
+    return () => { media.removeEventListener("change", reduce); context.revert(); };
+  }, [open]);
 
   function openDrawer() {
     dialog.current?.showModal();
@@ -63,20 +80,19 @@ export function WorkspaceDrawer() {
         </div>
 
         <div className={styles.content}>
-          <section className={`k-card-lift paper-grain ${styles.card}`}>
-            <div className="ws-section-heading"><h3>Recent activity</h3><Link href="/workspace/activity" onClick={() => dialog.current?.close()}>View all →</Link></div><WorkspaceActivity compact onNavigate={() => dialog.current?.close()} />
+          <section className={`${styles.card} ${styles.activityNote}`}>
+            <span className={styles.eyebrow}>A LITTLE WORKSPACE JOURNAL</span><div className="ws-section-heading"><h3>Recent activity</h3><Link href="/workspace/activity" onClick={() => dialog.current?.close()}>View all →</Link></div><WorkspaceActivity compact onNavigate={() => dialog.current?.close()} />
           </section>
-          <section className={`k-card-lift paper-grain ${styles.card}`}>
-            <h3>Quick actions</h3><div className="ws-quick-actions">
+          <section className={`${styles.card} ${styles.toolsNote}`}>
+            <span className={styles.eyebrow}>MAKE ROOM FOR GOOD WORK</span><h3>Quick actions</h3><p className={styles.noteDescription}>Pick a next step. Make something happen.</p><div className="ws-quick-actions">
               {data?.workspace.role !== "viewer" && <button onClick={() => { dialog.current?.close(); action("project"); }}>New project →</button>}
               {data && ["owner", "admin"].includes(data.workspace.role) && <button onClick={() => { dialog.current?.close(); action("member"); }}>Add member →</button>}
               {data?.projects.some(p => p.role !== "viewer") && <button onClick={() => { dialog.current?.close(); action("issue"); }}>Create issue →</button>}
               <Link href="/workspace/settings" onClick={() => dialog.current?.close()}>Workspace settings →</Link>
             </div>
+            <p className={styles.signature}>you’ve got this.</p>
           </section>
-          <p className={`font-sketch ${styles.quote}`}>
-            &ldquo;A better way<br />to build, together.&rdquo;
-          </p>
+
         </div>
       </dialog>
     </>

@@ -61,3 +61,9 @@ bun run build -- --webpack
 Additional endpoints: `GET /api/workspaces/:workspaceId/dashboard`, `POST /api/workspaces/:workspaceId/members`, and `PATCH/DELETE /api/workspaces/:workspaceId/members/:userId`. The dashboard only returns projects and issues accessible through project membership. No database migration is required.
 
 The integration suite also checks workspace dashboard scoping, real totals, member validation, owner protection, viewer creation restrictions, and assignment cleanup/access revocation after removal.
+
+## Navigation and motion
+
+The shared desktop sidebar preference persists across workspace and project pages. The project navigation becomes a drawer below 801px; Escape, backdrop dismissal, focus restoration, and keyboard focus containment are supported.
+
+GSAP drives short, staggered page/card entrances and sidebar width/slide transitions. Animations are scoped to their mounted components and reverted on navigation or unmount; reduced-motion preferences skip movement. The team view includes role filtering, real membership summaries, and stacked member rows on mobile.
