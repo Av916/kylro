@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { verifyMagicLink } from "../../lib/api";
 
-export function VerifyMagicLink({ token }: { token: string }) {
+export function VerifyMagicLink({ token, next }: { token: string; next?: string }) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -16,7 +16,7 @@ export function VerifyMagicLink({ token }: { token: string }) {
         setError("");
         try {
             await verifyMagicLink(token);
-            router.replace("/workspace");
+            router.replace(next && /^\/invitations\?token=[a-f0-9]{64}$/.test(next) ? next : "/workspace");
         } catch (err) {
             setError(err instanceof Error ? err.message : "Unable to sign in. Please try again.");
             setLoading(false);

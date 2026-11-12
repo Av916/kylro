@@ -21,7 +21,7 @@ export function EmptySketch() {
     </svg>;
 }
 export function EmptyState({ title, children, action }: { title: string; children: ReactNode; action?: ReactNode }) {
-    return <div className="project-empty"><EmptySketch /><h3>{title}</h3><p>{children}</p>{action}</div>;
+    return <div className="project-empty"><h3>{title}</h3><p>{children}</p>{action}</div>;
 }
 export function PageHeading({ eyebrow, title, description, actions }: { eyebrow: string; title: string; description: string; actions?: ReactNode }) {
     return <div className="project-page-heading"><div><span className="project-eyebrow">{eyebrow}</span><h1>{title}</h1><p>{description}</p></div>{actions && <div className="project-actions">{actions}</div>}</div>;

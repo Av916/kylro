@@ -67,7 +67,7 @@ export function WorkspaceDrawer() {
         <div className={styles.header}>
           <div>
             <h2 id="workspace-drawer-title">Activity &amp; tools</h2>
-            <p>A little context, whenever you need it.</p>
+            <p>{data?.workspace.name}</p>
           </div>
           <button
             type="button"
@@ -81,16 +81,15 @@ export function WorkspaceDrawer() {
 
         <div className={styles.content}>
           <section className={`${styles.card} ${styles.activityNote}`}>
-            <span className={styles.eyebrow}>A LITTLE WORKSPACE JOURNAL</span><div className="ws-section-heading"><h3>Recent activity</h3><Link href="/workspace/activity" onClick={() => dialog.current?.close()}>View all →</Link></div><WorkspaceActivity compact onNavigate={() => dialog.current?.close()} />
+            <span className={styles.eyebrow}>{data?.projects.length ?? 0} PROJECTS · {data?.issues.length ?? 0} ISSUES</span><div className="ws-section-heading"><h3>Recent activity</h3><Link href="/workspace/activity" onClick={() => dialog.current?.close()}>View all →</Link></div><WorkspaceActivity compact onNavigate={() => dialog.current?.close()} />
           </section>
           <section className={`${styles.card} ${styles.toolsNote}`}>
-            <span className={styles.eyebrow}>MAKE ROOM FOR GOOD WORK</span><h3>Quick actions</h3><p className={styles.noteDescription}>Pick a next step. Make something happen.</p><div className="ws-quick-actions">
+            <span className={styles.eyebrow}>{data?.workspace.role} ACCESS</span><h3>Quick actions</h3><div className="ws-quick-actions">
               {data?.workspace.role !== "viewer" && <button onClick={() => { dialog.current?.close(); action("project"); }}>New project →</button>}
               {data && ["owner", "admin"].includes(data.workspace.role) && <button onClick={() => { dialog.current?.close(); action("member"); }}>Add member →</button>}
               {data?.projects.some(p => p.role !== "viewer") && <button onClick={() => { dialog.current?.close(); action("issue"); }}>Create issue →</button>}
               <Link href="/workspace/settings" onClick={() => dialog.current?.close()}>Workspace settings →</Link>
             </div>
-            <p className={styles.signature}>you’ve got this.</p>
           </section>
 
         </div>

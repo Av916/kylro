@@ -93,3 +93,25 @@ export async function sendMagicLinkEmail({ toEmail, magicLink }: SendMagicLinkOp
         throw ApiError.internal("Failed to deliver magic link email");
     }
 }
+
+const escapeHtml = (value: string) => value.replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]!);
+
+export async function sendInvitationEmail({ toEmail, workspaceName, role, invitationLink }: { toEmail: string; workspaceName: string; role: string; invitationLink: string }): Promise<void> {
+    if (!env.BREVO_API_KEY) throw new ApiError(503, "Email delivery is not configured. Set BREVO_API_KEY and EMAIL_FROM before sending invitations.");
+    try {
+        const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+            method: "POST", signal: AbortSignal.timeout(15000),
+            headers: { "api-key": env.BREVO_API_KEY, "Content-Type": "application/json", Accept: "application/json" },
+            body: JSON.stringify({
+                sender: { name: "Kylro", email: env.EMAIL_FROM }, to: [{ email: toEmail }],
+                subject: `Invitation to ${workspaceName} on Kylro`,
+                textContent: `You have been invited to ${workspaceName} as a ${role}. Sign in with ${toEmail} to accept. This link expires in 7 days: ${invitationLink}`,
+                htmlContent: `<html><body style="background:#f7f5ef;color:#252522;font-family:Arial,sans-serif;padding:32px"><div style="max-width:480px;margin:auto;padding:32px;background:#fcfbf7;border:1px solid #d9d6cd;border-radius:12px"><h2>Kylro</h2><h1 style="font-size:24px">Join ${escapeHtml(workspaceName)}</h1><p>You have been invited as a <strong>${escapeHtml(role)}</strong>.</p><p>Sign in with ${escapeHtml(toEmail)} to accept. Your invitation expires in 7 days.</p><p><a style="display:inline-block;padding:12px 18px;background:#252522;color:#fcfbf7;border-radius:7px;text-decoration:none" href="${escapeHtml(invitationLink)}">Review invitation</a></p><p style="font-size:12px;color:#77756d">If you weren't expecting this invitation, you can ignore this email.</p></div></body></html>`,
+            }),
+        });
+        if (!response.ok) throw new ApiError(502, "The email provider could not deliver this invitation. Please try again later.");
+    } catch (error) {
+        if (error instanceof ApiError) throw error;
+        throw new ApiError(502, "Invitation email delivery failed. Please try again later.");
+    }
+}

@@ -51,7 +51,7 @@
 .includes > p { margin-top: 4px; font-size: 11px; color: #7a816f; }
 .features { display: flex; align-items: center; gap: 19px; flex-wrap: wrap; margin-top: 17px; }
 .features > span { display: flex; align-items: center; gap: 6px; color: #66765b; font-size: 10px; white-space: nowrap; }
-.footer { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 19px 30px; border-top: 1px solid var(--c-border); background: #f5f3ec; }
+.footer { display: flex; align-items: center; justify-content: flex-end; gap: 14px; padding: 19px 30px; border-top: 1px solid var(--c-border); background: #f5f3ec; }
 .footerNote { font-size: 10px; color: #898779; }
 .actions { display: flex; gap: 9px; flex-shrink: 0; }
 .actions button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 8px; font: 500 12px 'Workspace UI', sans-serif; cursor: pointer; transition: background .15s; }

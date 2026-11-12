@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { ArrowRight, Columns3, FolderPlus, ListTodo, LoaderCircle, Users, X } from "lucide-react";
+import { ArrowRight, FolderPlus, LoaderCircle, X } from "lucide-react";
 import { createProject } from "../../lib/api";
 import styles from "./CreateProjectDialog.module.css";
 
@@ -57,9 +57,9 @@ export function CreateProjectDialog({
       <header className={styles.header}>
         <div className={styles.icon}><FolderPlus size={23} strokeWidth={1.5} /></div>
         <button type="button" className={styles.close} onClick={onClose} disabled={loading} aria-label="Close create project dialog"><X size={19} strokeWidth={1.7} /></button>
-        <span className={styles.eyebrow}>A SPACE FOR YOUR NEXT IDEA</span>
+
         <h2 id="create-project-title">Create a project</h2>
-        <p id="create-project-description">Bring your tasks, ideas, and team together.<br />Great things start with a little space to build.</p>
+        <p id="create-project-description">Create a project in the selected workspace.</p>
       </header>
 
       <form onSubmit={handleSubmit}>
@@ -83,20 +83,10 @@ export function CreateProjectDialog({
             <div className={styles.hintRow}><p id="project-name-hint">Something clear and memorable. You can rename it later.</p><span>{name.length}/100</span></div>
           </div>
 
-          <div className={styles.includes}>
-            <span className={styles.includesHeading}>A home for your best work</span>
-            <p>Every project comes with the essentials.</p>
-            <div className={styles.features}>
-              <span><ListTodo size={16} strokeWidth={1.6} /> Issue tracking</span>
-              <span><Columns3 size={16} strokeWidth={1.6} /> Project board</span>
-              <span><Users size={16} strokeWidth={1.6} /> Your team</span>
-            </div>
-          </div>
           {error && <p id="project-create-error" role="alert" className={styles.error}>{error}</p>}
         </div>
 
         <footer className={styles.footer}>
-          <span className={styles.footerNote}>Make room for good work.</span>
           <div className={styles.actions}>
             <button type="button" className={styles.cancel} onClick={onClose} disabled={loading}>Cancel</button>
             <button type="submit" className={styles.submit} disabled={loading || !validName}>

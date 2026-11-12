@@ -1,9 +1,10 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { ArrowLeft, RefreshCw } from "lucide-react";
 import { projectApi, ProjectApiError, errorMessage, type Issue, type IssueStatus, type Project, type ProjectMember, type ProjectRole } from "../../lib/project-api";
+import { NotFoundScreen } from "../errors/NotFoundScreen";
 import { IssueDialog } from "./IssueDialog";
 
 interface ProjectContextValue {
@@ -23,6 +24,7 @@ export function useProject() {
 }
 
 export function ProjectProvider({ projectId, children }: { projectId: string; children: ReactNode }) {
+    const revision = useRef(0);
     const [data, setData] = useState<{ project: Project; role: ProjectRole; members: ProjectMember[]; issues: Issue[] } | null>(null);
     const [error, setError] = useState<Error | null>(null);
     const [attempt, setAttempt] = useState(0);
@@ -35,6 +37,8 @@ export function ProjectProvider({ projectId, children }: { projectId: string; ch
             .catch(error => { if (active) setError(error instanceof Error ? error : new Error(errorMessage(error))); });
         return () => { active = false; };
     }, [projectId, attempt]);
+
+    if (!data && error instanceof ProjectApiError && error.status === 404) return <NotFoundScreen project />;
 
     if (error && !data) return (
         <div className="project-gate">
@@ -56,12 +60,13 @@ export function ProjectProvider({ projectId, children }: { projectId: string; ch
         canEdit: data.role !== "viewer",
         canManage: data.role === "owner" || data.role === "admin",
         openIssue: (issue, status = "todo") => setEditor({ issue, status }),
-        saveIssue: issue => setData(current => current && ({ ...current, issues: current.issues.some(item => item.id === issue.id) ? current.issues.map(item => item.id === issue.id ? issue : item) : [issue, ...current.issues] })),
-        removeIssue: id => setData(current => current && ({ ...current, issues: current.issues.filter(issue => issue.id !== id) })),
-        setProject: project => setData(current => current && ({ ...current, project })),
+        saveIssue: issue => { revision.current++; setData(current => current && ({ ...current, issues: current.issues.some(item => item.id === issue.id) ? current.issues.map(item => item.id === issue.id ? issue : item) : [issue, ...current.issues] })); },
+        removeIssue: id => { revision.current++; setData(current => current && ({ ...current, issues: current.issues.filter(issue => issue.id !== id) })); },
+        setProject: project => { revision.current++; setData(current => current && ({ ...current, project })); },
         refreshMembers: async () => {
+            const ticket = ++revision.current;
             const [members, access, issues] = await Promise.all([projectApi.members(projectId), projectApi.get(projectId), projectApi.issues(projectId)]);
-            setData({ ...access, members, issues });
+            if (ticket === revision.current) setData({ ...access, members, issues });
         },
     };
     return <ProjectContext.Provider value={value}>{children}{editor && <IssueDialog issue={editor.issue} initialStatus={editor.status} onClose={() => setEditor(null)} />}</ProjectContext.Provider>;

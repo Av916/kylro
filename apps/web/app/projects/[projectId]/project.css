@@ -328,3 +328,9 @@
 }
 
 .page-motion { min-height:100%; }
+
+.data-refresh { position:relative; flex-shrink:0; }
+.data-refresh-error { position:absolute; z-index:30; right:0; top:36px; width:240px; padding:12px; border:1px solid #dfbbb0; border-radius:8px; background:#f6e9e4; color:#843f34; font-size:12px; }
+.data-refresh-spinning { animation:data-refresh-spin 1s linear infinite; }
+@keyframes data-refresh-spin { to { transform:rotate(360deg); } }
+@media(prefers-reduced-motion:reduce) { .data-refresh-spinning { animation:none; } }

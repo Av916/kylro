@@ -7,8 +7,8 @@ export const metadata = {
 export default async function VerifyPage({
     searchParams,
 }: {
-    searchParams: Promise<{ token?: string | string[] }>;
+    searchParams: Promise<{ token?: string | string[]; next?: string | string[] }>;
 }) {
-    const { token } = await searchParams;
-    return <VerifyMagicLink token={typeof token === "string" ? token : ""} />;
+    const { token, next } = await searchParams;
+    return <VerifyMagicLink next={typeof next === "string" ? next : undefined} token={typeof token === "string" ? token : ""} />;
 }

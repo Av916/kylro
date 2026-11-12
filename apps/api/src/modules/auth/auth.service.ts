@@ -146,7 +146,7 @@ export class AuthService {
      * 2. Generates a 256-bit random token and stores only its SHA-256 hash.
      * 3. Dispatches the magic link via Brevo.
      */
-    async sendMagicLink(email: string): Promise<void> {
+    async sendMagicLink(email: string, invitationReturnPath?: string): Promise<void> {
         const normalizedEmail = email.trim().toLowerCase();
 
         // 60-second rate-limit cooldown per email
@@ -177,7 +177,10 @@ export class AuthService {
             expiresAt,
         });
 
-        const magicLink = `${env.CLIENT_URL}/auth/verify?token=${rawToken}`;
+        const url = new URL("/auth/verify", env.CLIENT_URL);
+        url.searchParams.set("token", rawToken);
+        if (invitationReturnPath && /^\/invitations\?token=[a-f0-9]{64}$/.test(invitationReturnPath)) url.searchParams.set("next", invitationReturnPath);
+        const magicLink = url.toString();
 
         await sendMagicLinkEmail({
             toEmail: normalizedEmail,
