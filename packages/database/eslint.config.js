@@ -1,3 +1,6 @@
-import config from "@cognis/eslint-config/node";
+import { config } from "@kylro/eslint-config/base";
 
-export default config;
+export default [
+    ...config,
+    { ignores: ["drizzle/**"] },
+];

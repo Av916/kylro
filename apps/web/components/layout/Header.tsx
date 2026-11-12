@@ -10,7 +10,7 @@ interface HeaderProps {
   onToggleSidebar?: () => void;
 }
 
-export function Header({ user, workspace, sidebarOpen, onToggleSidebar }: HeaderProps) {
+export function Header({ user, sidebarOpen, onToggleSidebar }: HeaderProps) {
   const [open, setOpen] = useState(false);
   const firstName = user?.name?.split(" ")[0] ?? null;
   const initial   = (firstName ?? user?.email ?? "U")[0]!.toUpperCase();

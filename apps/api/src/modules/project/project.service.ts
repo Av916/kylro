@@ -9,7 +9,8 @@ export class ProjectService {
      */
     async createProject(userId: string, workspaceId: string, data: CreateProjectInput) {
         // Verify user is a member of the workspace
-        await workspaceService.getWorkspace(userId, workspaceId);
+        const workspace = await workspaceService.getWorkspace(userId, workspaceId);
+        if (workspace.role === "viewer") throw ApiError.forbidden("Viewers cannot create projects");
 
         return db.transaction(async (tx) => {
             const [newProject] = await tx

@@ -10,6 +10,15 @@ import type {
 } from "./project.validation.js";
 
 export class ProjectController {
+    async getMemberCandidates(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const members = await projectMemberService.getCandidates(req.user!.id, String(req.params.projectId));
+            ApiResponse.success(res, "Available workspace members retrieved", members);
+        } catch (err) {
+            next(err);
+        }
+    }
+
     /**
      * POST /workspaces/:workspaceId/projects
      */

@@ -57,7 +57,10 @@
   --font-mono:   'JetBrains Mono', monospace;
 }
 
-*, *::before, *::after { box-sizing: border-box; padding: 0; margin: 0; }
+/* Keep the reset below utility styles so spacing classes can take effect. */
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; padding: 0; margin: 0; }
+}
 
 html, body {
   background-color: var(--c-page);

@@ -28,8 +28,8 @@ export function ProjectGrid({
       </div>
 
       {projects.length === 0 ? (
-        <div onClick={() => setModal(true)}
-          className="k-card-dashed flex flex-col items-center justify-center text-center"
+        <button type="button" onClick={() => setModal(true)}
+          className="k-card-dashed w-full flex flex-col items-center justify-center text-center"
           style={{ minHeight: 165, padding: 24 }}>
           <div className="flex items-center justify-center rounded-xl mb-3"
             style={{ width: 40, height: 40, border: "1.5px dashed var(--c-border)", color: "var(--c-ink-4)" }}>
@@ -40,7 +40,7 @@ export function ProjectGrid({
           </div>
           <p className="text-[14px] font-medium" style={{ color: "var(--c-ink-2)" }}>Create your first project</p>
           <p className="text-[13px] mt-1" style={{ color: "var(--c-ink-4)" }}>Organize issues, boards, and sprints.</p>
-        </div>
+        </button>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 20 }}>
           {projects.map((p, i) => (
@@ -48,8 +48,8 @@ export function ProjectGrid({
           ))}
 
           {/* New project tile */}
-          <div onClick={() => setModal(true)}
-            className="k-card-dashed group flex flex-col items-center justify-center text-center"
+          <button type="button" onClick={() => setModal(true)}
+            className="k-card-dashed w-full group flex flex-col items-center justify-center text-center"
             style={{ minHeight: 165, padding: 24 }}>
             <div className="flex items-center justify-center rounded-xl mb-2 transition-colors"
               style={{ width: 36, height: 36, border: "1.5px dashed var(--c-ink-5)", color: "var(--c-ink-5)" }}>
@@ -60,7 +60,7 @@ export function ProjectGrid({
             </div>
             <p className="text-[13px] font-medium" style={{ color: "var(--c-ink-4)" }}>New project</p>
             <p className="text-[12px] mt-0.5" style={{ color: "var(--c-ink-5)" }}>Start building something amazing.</p>
-          </div>
+          </button>
         </div>
       )}
 

@@ -7,7 +7,8 @@ export function ActivityEmptyState() {
     const [notes, setNotes] = useState<string>("");
     const [savedStatus, setSavedStatus] = useState<string>("Saved");
 
-    // Load saved field notes from localStorage
+    // Read browser storage after hydration to keep the server and first client render consistent.
+    /* eslint-disable react-hooks/set-state-in-effect */
     useEffect(() => {
         try {
             const saved = localStorage.getItem("kylro_studio_notes");
@@ -20,6 +21,7 @@ export function ActivityEmptyState() {
             // Ignore localStorage error if disabled
         }
     }, []);
+    /* eslint-enable react-hooks/set-state-in-effect */
 
     const handleNotesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const val = e.target.value;

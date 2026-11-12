@@ -2,6 +2,7 @@ import { globalIgnores } from "eslint/config";
 import pluginReactHooks from "eslint-plugin-react-hooks";
 import globals from "globals";
 import pluginNext from "@next/eslint-plugin-next";
+import react from "eslint-plugin-react";
 import { config as baseConfig } from "./base.js";
 
 /**
@@ -29,10 +30,12 @@ export const nextJsConfig = [
   {
     plugins: {
       "@next/next": pluginNext,
+      react,
     },
     rules: {
       ...pluginNext.configs.recommended.rules,
       ...pluginNext.configs["core-web-vitals"].rules,
+      "react/jsx-uses-vars": "error",
     },
   },
   pluginReactHooks.configs.flat.recommended,

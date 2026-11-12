@@ -50,7 +50,7 @@ export function LoginPencilSketch() {
     const [loginSuccess, setLoginSuccess] = useState<string | null>(null);
 
     const handleGoogleLogin = () => {
-        window.location.href = `${API_URL}/api/auth/google`;
+        window.location.href = new URL("/api/auth/google", API_URL).href;
     };
 
     const handleLoginSubmit = async (e: React.FormEvent) => {

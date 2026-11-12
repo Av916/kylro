@@ -1,114 +1,110 @@
 "use client";
 
-import React, { useState } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import { ArrowRight, Columns3, FolderPlus, ListTodo, LoaderCircle, Users, X } from "lucide-react";
 import { createProject } from "../../lib/api";
-
-const TEMPLATES = [
-  { name: "Web Application",    desc: "Next.js / React with UI components" },
-  { name: "API & Backend",      desc: "Express / Node / Database service" },
-  { name: "Full-Stack Monorepo", desc: "Client, API, and shared packages" },
-];
+import styles from "./CreateProjectDialog.module.css";
 
 export function CreateProjectDialog({
   workspaceId, onClose, onSuccess,
 }: { workspaceId: string; onClose: () => void; onSuccess: () => void }) {
-  const [name, setName]           = useState("");
-  const [tmpl, setTmpl]           = useState(0);
-  const [loading, setLoading]     = useState(false);
-  const [error, setError]         = useState("");
+  const dialog = useRef<HTMLDialogElement>(null);
+  const nameInput = useRef<HTMLInputElement>(null);
+  const [name, setName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const validName = name.trim().length >= 2 && name.trim().length <= 100;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const t = name.trim();
-    if (!t) return;
+  useEffect(() => {
+    const element = dialog.current;
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    element?.showModal();
+    nameInput.current?.focus();
+    return () => {
+      element?.close();
+      if (previousFocus?.isConnected) previousFocus.focus();
+    };
+  }, []);
+
+  async function handleSubmit(event: FormEvent) {
+    event.preventDefault();
+    if (loading || !validName) return;
     setLoading(true);
     setError("");
     try {
-      await createProject(workspaceId, { name: t });
+      await createProject(workspaceId, { name: name.trim() });
       onSuccess();
       onClose();
-    } catch (err: any) {
-      setError(err.message || "Failed to create project.");
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Could not create your project. Please try again.");
       setLoading(false);
     }
-  };
+  }
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 k-fade-in"
-      style={{ background: "rgba(37,37,34,0.35)", backdropFilter: "blur(3px)" }}
+    <dialog
+      ref={dialog}
+      className={styles.dialog}
+      aria-labelledby="create-project-title"
+      aria-describedby="create-project-description"
+      onCancel={event => { event.preventDefault(); if (!loading) onClose(); }}
+      onClick={event => {
+        if (loading || event.target !== event.currentTarget) return;
+        const bounds = event.currentTarget.getBoundingClientRect();
+        if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) onClose();
+      }}
     >
-      <div
-        className="w-full max-w-md relative"
-        style={{
-          background: "var(--c-card)",
-          border: "1px solid var(--c-border)",
-          borderRadius: 16,
-          boxShadow: "0 12px 40px rgba(37,37,34,0.16)",
-          padding: 28,
-        }}
-        onClick={e => e.stopPropagation()}
-      >
-        <button onClick={onClose} className="absolute top-5 right-5 flex items-center justify-center rounded-lg transition-colors"
-          style={{ width: 28, height: 28, color: "var(--c-ink-3)" }} aria-label="Close">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-            strokeLinecap="round" strokeLinejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
-        </button>
+      <header className={styles.header}>
+        <div className={styles.icon}><FolderPlus size={23} strokeWidth={1.5} /></div>
+        <button type="button" className={styles.close} onClick={onClose} disabled={loading} aria-label="Close create project dialog"><X size={19} strokeWidth={1.7} /></button>
+        <span className={styles.eyebrow}>A SPACE FOR YOUR NEXT IDEA</span>
+        <h2 id="create-project-title">Create a project</h2>
+        <p id="create-project-description">Bring your tasks, ideas, and team together.<br />Great things start with a little space to build.</p>
+      </header>
 
-        <h2 className="text-[18px] font-semibold mb-1" style={{ color: "var(--c-ink)" }}>Create new project</h2>
-        <p className="text-[13px] mb-6" style={{ color: "var(--c-ink-3)" }}>
-          Initialize a project for tracking, boards, and sprints.
-        </p>
-
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label className="block text-[12px] font-medium mb-1.5" style={{ color: "var(--c-ink-2)" }} htmlFor="pname">
-              Project name
-            </label>
-            <input id="pname" type="text" value={name} onChange={e => setName(e.target.value)}
-              placeholder="e.g. Core Engine, Web Client…"
-              className="k-input w-full px-3.5 py-2.5 text-[14px]" autoFocus disabled={loading} />
-            {error && <p className="text-[12px] mt-1.5 font-medium" style={{ color: "#7A4F1E" }}>{error}</p>}
+      <form onSubmit={handleSubmit}>
+        <div className={styles.body}>
+          <div className={styles.field}>
+            <label htmlFor="new-project-name">Project name</label>
+            <input
+              ref={nameInput}
+              id="new-project-name"
+              type="text"
+              value={name}
+              onChange={event => { setName(event.target.value); setError(""); }}
+              placeholder="e.g. Website redesign"
+              required
+              minLength={2}
+              maxLength={100}
+              autoComplete="off"
+              disabled={loading}
+              aria-describedby={error ? "project-name-hint project-create-error" : "project-name-hint"}
+            />
+            <div className={styles.hintRow}><p id="project-name-hint">Something clear and memorable. You can rename it later.</p><span>{name.length}/100</span></div>
           </div>
 
-          <div>
-            <label className="block text-[12px] font-medium mb-2" style={{ color: "var(--c-ink-2)" }}>Template</label>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {TEMPLATES.map((t, i) => (
-                <button key={t.name} type="button" onClick={() => setTmpl(i)}
-                  className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-[10px] text-left transition-all"
-                  style={{
-                    border: `1px solid ${tmpl === i ? "var(--c-accent)" : "var(--c-border)"}`,
-                    background: tmpl === i ? "var(--c-accent-soft)" : "var(--c-card)",
-                    color: tmpl === i ? "var(--c-ink)" : "var(--c-ink-2)",
-                    fontSize: 13,
-                    fontFamily: "inherit",
-                  }}>
-                  <div>
-                    <p className="font-medium">{t.name}</p>
-                    <p className="text-[11px] mt-0.5" style={{ color: "var(--c-ink-4)" }}>{t.desc}</p>
-                  </div>
-                  <div className="w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 ml-3"
-                    style={{ borderColor: tmpl === i ? "var(--c-accent)" : "var(--c-border)" }}>
-                    {tmpl === i && <span className="w-2 h-2 rounded-full" style={{ background: "var(--c-accent)" }} />}
-                  </div>
-                </button>
-              ))}
+          <div className={styles.includes}>
+            <span className={styles.includesHeading}>A home for your best work</span>
+            <p>Every project comes with the essentials.</p>
+            <div className={styles.features}>
+              <span><ListTodo size={16} strokeWidth={1.6} /> Issue tracking</span>
+              <span><Columns3 size={16} strokeWidth={1.6} /> Project board</span>
+              <span><Users size={16} strokeWidth={1.6} /> Your team</span>
             </div>
           </div>
+          {error && <p id="project-create-error" role="alert" className={styles.error}>{error}</p>}
+        </div>
 
-          <div className="flex items-center justify-end gap-2.5 pt-4" style={{ borderTop: "1px solid var(--c-border)" }}>
-            <button type="button" onClick={onClose}
-              className="k-btn k-btn-ghost px-4 text-[13px]" disabled={loading}>Cancel</button>
-            <button type="submit"
-              className="k-btn k-btn-primary px-5 text-[13px]" disabled={loading || !name.trim()}>
-              {loading ? "Creating…" : "Create project →"}
+        <footer className={styles.footer}>
+          <span className={styles.footerNote}>Make room for good work.</span>
+          <div className={styles.actions}>
+            <button type="button" className={styles.cancel} onClick={onClose} disabled={loading}>Cancel</button>
+            <button type="submit" className={styles.submit} disabled={loading || !validName}>
+              {loading ? <><LoaderCircle size={16} className={styles.spinner} /> Creating…</> : <>Create project <ArrowRight size={16} /></>}
             </button>
           </div>
-        </form>
-      </div>
-    </div>
+        </footer>
+      </form>
+    </dialog>
   );
 }

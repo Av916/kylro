@@ -2,6 +2,7 @@ import { Router } from "express";
 import { validateRequest } from "../../shared/middlewares/validateRequest.js";
 import { requireAuth } from "../auth/auth.middleware.js";
 import { projectController } from "./project.controller.js";
+import { issueRoutes } from "./issue.routes.js";
 import {
     createProjectSchema,
     updateProjectSchema,
@@ -15,6 +16,13 @@ import {
 export const projectRoutes: Router = Router();
 
 projectRoutes.use(requireAuth);
+projectRoutes.use(issueRoutes);
+
+projectRoutes.get(
+    "/projects/:projectId/member-candidates",
+    validateRequest({ params: projectIdSchema }),
+    projectController.getMemberCandidates.bind(projectController),
+);
 
 // --- Workspace Project Routes ---
 

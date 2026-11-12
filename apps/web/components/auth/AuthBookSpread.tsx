@@ -35,7 +35,7 @@ export function AuthBookSpread({ initialMode = "login" }: AuthBookSpreadProps) {
 
     // Initiates Google OAuth via backend redirect
     const handleGoogleLogin = () => {
-        window.location.href = `${API_URL}/api/auth/google`;
+        window.location.href = new URL("/api/auth/google", API_URL).href;
     };
 
     // Submits login magic link request

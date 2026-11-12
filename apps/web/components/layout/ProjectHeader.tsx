@@ -1,43 +1,28 @@
 "use client";
 
+import { useState, type FormEvent } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { Search, PanelLeftClose, PanelLeftOpen, Plus, ChevronRight } from "lucide-react";
+import { useProject } from "../project/ProjectProvider";
+import { Avatar } from "../project/ProjectUI";
 
-export function ProjectHeader({ project }: { project: any }) {
+export function ProjectHeader({ onOpenNavigation, navigationOpen }: { onOpenNavigation: () => void; navigationOpen: boolean }) {
+    const { project, members, canEdit, openIssue } = useProject();
     const pathname = usePathname();
-    
-    let viewName = "Overview";
-    if (pathname.includes("/issues")) viewName = "Issues";
-    else if (pathname.includes("/board")) viewName = "Board";
-    else if (pathname.includes("/members")) viewName = "Members";
-    else if (pathname.includes("/activity")) viewName = "Activity";
-
-    return (
-        <header className="flex items-center justify-between py-3 px-6 bg-[var(--paper-card)] border-b-[1.5px] border-[var(--pencil)] select-none">
-            {/* Breadcrumb */}
-            <div className="flex items-center gap-2 text-[12px]">
-                <Link href="/workspace" className="text-[var(--ink-faint)] hover:text-[var(--ink)] transition-colors font-medium">
-                    Workspace
-                </Link>
-                <span className="text-[var(--ink-ghost)]">/</span>
-                <span className="font-semibold text-[var(--ink-dark)]">{project?.name || "Project"}</span>
-                <span className="text-[var(--ink-ghost)]">/</span>
-                <span className="text-[var(--ink-faint)]">{viewName}</span>
-            </div>
-            
-            {/* Actions */}
-            <div className="flex items-center gap-2">
-                <button className="sketch-icon-btn" aria-label="Search">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
-                    </svg>
-                </button>
-                <button className="sketch-icon-btn" aria-label="Notifications">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" />
-                    </svg>
-                </button>
-            </div>
-        </header>
-    );
+    const router = useRouter();
+    const [query, setQuery] = useState("");
+    const segment = pathname.split("/")[3] || "overview";
+    const viewName = segment[0]!.toUpperCase() + segment.slice(1);
+    function search(event: FormEvent) {
+        event.preventDefault();
+        router.push(`/projects/${project.id}/issues?q=${encodeURIComponent(query.trim())}`);
+    }
+    return <header className="project-header">
+        <button id="project-sidebar-toggle" className="project-icon-button project-navigation-toggle" onClick={onOpenNavigation} aria-label={navigationOpen ? "Collapse project sidebar" : "Open project navigation"} title={navigationOpen ? "Collapse sidebar" : "Open sidebar"} aria-expanded={navigationOpen} aria-controls="project-navigation">{navigationOpen ? <PanelLeftClose size={19} /> : <PanelLeftOpen size={19} />}</button>
+        <div className="project-breadcrumb"><Link href={`/projects/${project.id}`}>{project.name}</Link><ChevronRight size={13} /><span>{viewName}</span></div>
+        <form className="project-header-search" onSubmit={search} role="search"><Search size={16} /><input aria-label="Search project issues" placeholder="Find an issue…" value={query} onChange={event => setQuery(event.target.value)} /><button type="submit" aria-label="Search issues"><span>↵</span></button></form>
+        <Link href={`/projects/${project.id}/members`} className="project-header-team" aria-label={`View ${members.length} project members`}>{members.slice(0, 3).map(member => <Avatar key={member.userId} name={member.name} small />)}</Link>
+        {canEdit && <button className="project-button project-header-create" onClick={() => openIssue()}><Plus size={16} /><span>New issue</span></button>}
+    </header>;
 }

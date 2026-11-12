@@ -54,7 +54,7 @@ export function SignupPencilSketch() {
     const [success, setSuccess] = useState<string | null>(null);
 
     const handleGoogleSignup = () => {
-        window.location.href = `${API_URL}/api/auth/google`;
+        window.location.href = new URL("/api/auth/google", API_URL).href;
     };
 
     const handleSignupSubmit = async (e: React.FormEvent) => {

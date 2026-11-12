@@ -1,3 +1,4 @@
+import { workspaceDataRoutes } from "./workspace-data.routes.js";
 import { Router } from "express";
 import { validateRequest } from "../../shared/middlewares/validateRequest.js";
 import { requireAuth } from "../auth/auth.middleware.js";
@@ -12,6 +13,7 @@ export const workspaceRoutes: Router = Router();
 
 // Apply requireAuth middleware to all routes in this router
 workspaceRoutes.use(requireAuth);
+workspaceRoutes.use(workspaceDataRoutes);
 
 workspaceRoutes.post(
     "/",

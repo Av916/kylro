@@ -5,6 +5,20 @@ import { workspaceService } from "../workspace/workspace.service.js";
 import type { AddProjectMemberInput, UpdateProjectMemberInput } from "./project.validation.js";
 
 export class ProjectMemberService {
+    async getCandidates(userId: string, projectId: string) {
+        const { project, role } = await projectService.getProject(userId, projectId);
+        if (role !== "owner" && role !== "admin") throw ApiError.forbidden("Only owners and admins can add project members");
+        const workspaceMembers = await db.select({
+            userId: schemas.users.id, name: schemas.users.name, email: schemas.users.email,
+        }).from(schemas.workspaceMembers)
+            .innerJoin(schemas.users, eq(schemas.users.id, schemas.workspaceMembers.userId))
+            .where(eq(schemas.workspaceMembers.workspaceId, project.workspaceId));
+        const existing = await db.select({ userId: schemas.projectMembers.userId }).from(schemas.projectMembers)
+            .where(eq(schemas.projectMembers.projectId, projectId));
+        const ids = new Set(existing.map(member => member.userId));
+        return workspaceMembers.filter(member => !ids.has(member.userId));
+    }
+
     /**
      * Get all members of a project.
      * Requires the authenticated user to be a member of the project.
@@ -20,6 +34,7 @@ export class ProjectMemberService {
                 name: schemas.users.name,
                 username: schemas.users.username,
                 email: schemas.users.email,
+                createdAt: schemas.projectMembers.createdAt,
             })
             .from(schemas.projectMembers)
             .innerJoin(schemas.users, eq(schemas.projectMembers.userId, schemas.users.id))
@@ -165,14 +180,13 @@ export class ProjectMemberService {
             throw ApiError.forbidden("Cannot remove the project owner");
         }
 
-        await db
-            .delete(schemas.projectMembers)
-            .where(
-                and(
-                    eq(schemas.projectMembers.projectId, projectId),
-                    eq(schemas.projectMembers.userId, targetUserId)
-                )
-            );
+        await db.transaction(async (tx) => {
+            await tx.update(schemas.issues)
+                .set({ assignedTo: null, updatedAt: new Date() })
+                .where(and(eq(schemas.issues.projectId, projectId), eq(schemas.issues.assignedTo, targetUserId)));
+            await tx.delete(schemas.projectMembers)
+                .where(and(eq(schemas.projectMembers.projectId, projectId), eq(schemas.projectMembers.userId, targetUserId)));
+        });
     }
 }
 

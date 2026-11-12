@@ -1,5 +1,19 @@
 export const API_URL = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api`;
 
+export async function verifyMagicLink(token: string) {
+    const res = await fetch(`${API_URL}/auth/magic-link/verify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ token }),
+    });
+    if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || "Unable to verify your sign-in link. Please request a new one.");
+    }
+    return res.json();
+}
+
 export async function fetchUser() {
     const res = await fetch(`${API_URL}/auth/me`, {
         credentials: "include",
