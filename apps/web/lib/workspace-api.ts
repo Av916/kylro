@@ -22,3 +22,18 @@ export function workspaceActivity(data: WorkspaceData) {
         ...data.members.map(m => ({ id: `m-${m.userId}`, title: `${m.name} joined the workspace`, date: m.createdAt, href: "/workspace/members" })),
     ].sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
 }
+export interface WorkspaceInvitation { id: string; email: string; role: ProjectRole; status: string; deliveryStatus: string; expiresAt: string; createdAt: string }
+export interface Notification { id: string; title: string; href: string; readAt: string | null; createdAt: string; workspaceId: string; projectId: string | null }
+export const invitationApi = {
+    list: (workspaceId: string) => request<WorkspaceInvitation[]>(`/workspaces/${workspaceId}/invitations`),
+    send: (workspaceId: string, email: string, role: string) => request<WorkspaceInvitation>(`/workspaces/${workspaceId}/invitations`, "POST", { email, role }),
+    revoke: (workspaceId: string, id: string) => request<void>(`/workspaces/${workspaceId}/invitations/${id}`, "DELETE"),
+    preview: (token: string) => request<WorkspaceInvitation & { workspaceName: string; workspaceId: string }>(`/invitations/${token}`),
+    signIn: (token: string) => request(`/invitations/${token}/sign-in`, "POST"),
+    accept: (token: string) => request<{ workspaceId: string }>(`/invitations/${token}/accept`, "POST"),
+};
+export const notificationApi = {
+    list: (offset = 0) => request<{ items: Notification[]; unreadCount: number; nextOffset: number | null }>(`/notifications?offset=${offset}`),
+    read: (id: string, read: boolean) => request<Notification>(`/notifications/${id}`, "PATCH", { read }),
+    readAll: () => request<void>("/notifications/read-all", "POST"),
+};

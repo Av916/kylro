@@ -19,6 +19,10 @@ describe.skipIf(!testDatabaseUrl)("Project API with PostgreSQL", () => {
     const ids = { owner: crypto.randomUUID(), member: crypto.randomUUID(), viewer: crypto.randomUUID(), candidate: crypto.randomUUID(), outsider: crypto.randomUUID(), workspace: crypto.randomUUID(), project: crypto.randomUUID(), otherProject: crypto.randomUUID() };
     const cookies: Record<string, string> = {};
     let issueId = "";
+    const originalFetch = globalThis.fetch;
+    let invitationToken = "";
+    let failEmail = false;
+
 
     async function api(path: string, user = "owner", method = "GET", body?: unknown) {
         return fetch(`${base}/api/projects/${ids.project}${path}`, {
@@ -33,12 +37,22 @@ describe.skipIf(!testDatabaseUrl)("Project API with PostgreSQL", () => {
         const url = new URL(testDatabaseUrl!);
         url.searchParams.set("options", `-c search_path=${schema}`);
         process.env.DATABASE_URL = url.toString();
+        process.env.BREVO_API_KEY = "test-provider-key";
+        globalThis.fetch = (async (input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]) => {
+            if (String(input) === "https://api.brevo.com/v3/smtp/email") {
+                const body = JSON.parse(String(init?.body));
+                const match = body.htmlContent?.match(/invitations\?token=([a-f0-9]{64})/);
+                if (match) invitationToken = match[1];
+                return new Response("{}", { status: failEmail ? 500 : 201 });
+            }
+            return originalFetch(input, init);
+        }) as typeof fetch;
         process.env.CLIENT_URL ||= "http://localhost:3000";
         database = await import("../packages/database/src/index");
         const { db } = database;
         const result = await db.$client.query("SELECT current_schema() AS schema");
         expect(result.rows[0].schema).toBe(schema);
-        for (const migration of ["20260919182909_pretty_reavers", "20260919183358_early_iron_lad"]) {
+        for (const migration of ["20260919182909_pretty_reavers", "20260919183358_early_iron_lad", "20261112182444_great_black_panther"]) {
             await db.$client.query(await readFile(new URL(`../packages/database/drizzle/${migration}/migration.sql`, import.meta.url), "utf8"));
         }
         const { schemas } = database;
@@ -63,6 +77,7 @@ describe.skipIf(!testDatabaseUrl)("Project API with PostgreSQL", () => {
     }, 30000);
 
     afterAll(async () => {
+        globalThis.fetch = originalFetch;
         if (server) { server.closeAllConnections(); await new Promise<void>(resolve => server!.close(() => resolve())); }
         if (database) await database.db.$client.end();
         if (createdSchema) await bootstrap.query(`DROP SCHEMA "${schema}" CASCADE`);
@@ -160,6 +175,59 @@ describe.skipIf(!testDatabaseUrl)("Project API with PostgreSQL", () => {
         expect((await workspaceApi(`/members/${ids.member}`, "owner", "DELETE")).status).toBe(204);
         expect((await api("/issues", "member")).status).toBe(404);
         expect((await (await api("/issues")).json()).data[0].assignedTo).toBeNull();
+    }, 30000);
+
+    test("email invitations enforce identity, single use, and persist membership", async () => {
+        expect((await workspaceApi("/invitations", "candidate", "POST", { email: "outsider@example.test" })).status).toBe(403);
+        const sent = await workspaceApi("/invitations", "owner", "POST", { email: "outsider@example.test", role: "viewer" });
+        expect(sent.status).toBe(201); expect(invitationToken.length).toBe(64);
+        const invite = (await sent.json()).data;
+        expect(invite.tokenHash).toBeUndefined();
+        const preview = await fetch(`${base}/api/invitations/${invitationToken}`); expect(preview.status).toBe(200);
+        const accept = (user: string) => fetch(`${base}/api/invitations/${invitationToken}/accept`, { method: "POST", headers: { Cookie: cookies[user]! } });
+        expect((await accept("owner")).status).toBe(403);
+        expect((await accept("outsider")).status).toBe(200);
+        expect((await accept("outsider")).status).toBe(410);
+        expect((await workspaceApi("/dashboard", "outsider")).status).toBe(200);
+    }, 30000);
+    test("failed delivery and revocation cannot be accepted", async () => {
+        failEmail = true;
+        expect((await workspaceApi("/invitations", "owner", "POST", { email: "new@example.test" })).status).toBe(502);
+        expect((await fetch(`${base}/api/invitations/${invitationToken}`)).status).toBe(410);
+        failEmail = false;
+        const sent = await workspaceApi("/invitations", "owner", "POST", { email: "revoked@example.test" });
+        expect(sent.status).toBe(201);
+        const invite = (await sent.json()).data;
+        expect((await workspaceApi(`/invitations/${invite.id}`, "owner", "DELETE")).status).toBe(204);
+        expect((await fetch(`${base}/api/invitations/${invitationToken}`)).status).toBe(410);
+    }, 30000);
+    test("notifications persist, protect recipients, and support read/unread", async () => {
+        await api("/issues", "owner", "POST", { title: "Notify the project" });
+        const inbox = async (user: string) => fetch(`${base}/api/notifications`, { headers: { Cookie: cookies[user]! } });
+        const owner = (await (await inbox("owner")).json()).data;
+        expect(owner.unreadCount).toBeGreaterThan(0);
+        const item = owner.items[0];
+        expect((await fetch(`${base}/api/notifications/${item.id}`, { method:"PATCH", headers:{Cookie:cookies.outsider!,"Content-Type":"application/json"},body:JSON.stringify({read:true}) })).status).toBe(404);
+        expect((await fetch(`${base}/api/notifications/read-all`, {method:"POST",headers:{Cookie:cookies.owner!}})).status).toBe(204);
+        expect((await (await inbox("owner")).json()).data.unreadCount).toBe(0);
+        expect((await fetch(`${base}/api/notifications/${item.id}`, {method:"PATCH",headers:{Cookie:cookies.owner!,"Content-Type":"application/json"},body:JSON.stringify({read:false})})).status).toBe(200);
+        expect((await (await inbox("owner")).json()).data.unreadCount).toBe(1);
+    }, 30000);
+
+    test("live stream delivers a committed change from another session", async () => {
+        const controller = new AbortController();
+        const response = await fetch(`${base}/api/events`, { headers: { Cookie: cookies.owner! }, signal: controller.signal });
+        expect(response.headers.get("content-type")).toContain("text/event-stream");
+        const reader = response.body!.getReader();
+        async function change() { let text = ""; while (!text.includes("event: change")) { const chunk = await reader.read(); if (chunk.done) throw new Error("Stream closed"); text += new TextDecoder().decode(chunk.value); } return text; }
+        try {
+            const first = await change();
+            await api("/issues", "member", "POST", { title: "Live update from a teammate" });
+            // This test is also valid after membership-removal tests: use the owner if necessary.
+            await api("/issues", "owner", "POST", { title: "Live persisted update" });
+            const next = await change();
+            expect(next).not.toBe(first);
+        } finally { controller.abort(); await reader.cancel().catch(() => {}); }
     }, 30000);
 
 });

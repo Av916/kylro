@@ -174,3 +174,21 @@
  .ws-form footer { flex-wrap:wrap; }
 }
 @media(prefers-reduced-motion:reduce) { .ws-project-card { transition:none; } }
+
+.ws-notification-button { position:relative; }
+.ws-notification-count { position:absolute; top:-6px; right:-7px; min-width:18px; height:18px; padding:0 4px; border-radius:9px; display:grid; place-items:center; background:#9a5345; color:#fff; font-size:9px; }
+.ws-notification-toolbar { display:flex; align-items:center; justify-content:space-between; gap:14px; }
+.ws-notification-toolbar .ws-text-button { display:flex; align-items:center; gap:5px; }
+.ws-notifications>div { display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--c-border); padding:10px 8px; }
+.ws-notifications>div.unread { background:#edf1e7; border-left:3px solid var(--c-accent); }
+.ws-notifications>div>a { flex:1; min-width:0; }
+.ws-notifications>div>a strong { font-size:12px; }
+.ws-notifications>div>button { flex-shrink:0; font-size:10px; }
+
+.ws-account .ws-signout { width:100%; padding:11px 12px; border:1px solid transparent; border-radius:8px; color:var(--c-ink-2); background:var(--c-page); transition:background .16s,border-color .16s,transform .12s; }
+.ws-account .ws-signout:hover:not(:disabled) { background:#f0e7e0; border-color:#dfcfc2; color:#854f40; }
+.ws-account .ws-signout:active:not(:disabled) { transform:scale(.97); background:#e6dbd1; }
+.ws-account .ws-signout.is-pending { opacity:1; background:var(--c-accent-soft); border-color:#cbd5c4; color:var(--c-accent); cursor:wait; }
+.ws-signout-spinner { animation:ws-signout-spin .8s linear infinite; }
+@keyframes ws-signout-spin { to { transform:rotate(360deg); } }
+@media(prefers-reduced-motion:reduce) { .ws-account .ws-signout { transition:none; }.ws-account .ws-signout:active { transform:none; }.ws-signout-spinner { animation:none; } }

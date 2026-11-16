@@ -1,10 +1,18 @@
 import { drizzle, type NodePgDatabase } from "drizzle-orm/node-postgres";
-import type { Pool } from "pg";
+import { Pool } from "pg";
 import env from "./env.js";
 
 import * as schemas from "./schemas/index.js";
 
-export const db: NodePgDatabase & { $client: Pool } = drizzle(env.DATABASE_URL);
+const pool = new Pool({
+    connectionString: env.DATABASE_URL,
+    connectionTimeoutMillis: 10000,
+    idleTimeoutMillis: 30000,
+    max: 10,
+});
+// A dropped idle connection must not crash the process. pg removes it from the pool.
+pool.on("error", (error: Error & { code?: string }) => console.error(`Idle database connection closed (${error.code || "connection error"}). Future queries will reconnect.`));
+export const db: NodePgDatabase & { $client: Pool } = drizzle({ client: pool });
 
 export { schemas };
 

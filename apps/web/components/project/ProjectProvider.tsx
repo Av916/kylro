@@ -1,6 +1,8 @@
 "use client";
 
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import { API_URL } from "../../lib/api";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, RefreshCw } from "lucide-react";
 import { projectApi, ProjectApiError, errorMessage, type Issue, type IssueStatus, type Project, type ProjectMember, type ProjectRole } from "../../lib/project-api";
@@ -24,6 +26,7 @@ export function useProject() {
 }
 
 export function ProjectProvider({ projectId, children }: { projectId: string; children: ReactNode }) {
+    const router = useRouter();
     const revision = useRef(0);
     const [data, setData] = useState<{ project: Project; role: ProjectRole; members: ProjectMember[]; issues: Issue[] } | null>(null);
     const [error, setError] = useState<Error | null>(null);
@@ -37,6 +40,19 @@ export function ProjectProvider({ projectId, children }: { projectId: string; ch
             .catch(error => { if (active) setError(error instanceof Error ? error : new Error(errorMessage(error))); });
         return () => { active = false; };
     }, [projectId, attempt]);
+
+    useEffect(() => {
+        const events = new EventSource(`${API_URL}/events`, { withCredentials: true });
+        let active = true;
+        events.addEventListener("change", () => {
+            const ticket = ++revision.current;
+            Promise.all([projectApi.get(projectId), projectApi.members(projectId), projectApi.issues(projectId)])
+                .then(([access, members, issues]) => { if (active && ticket === revision.current) { setData({ ...access, members, issues }); setError(null); } })
+                .catch(err => { if (active && err instanceof ProjectApiError && [401, 404].includes(err.status)) { setData(null); setEditor(null); setError(err); } });
+        });
+        events.addEventListener("session-ended", () => { events.close(); router.replace("/login"); });
+        return () => { active = false; events.close(); };
+    }, [projectId, router]);
 
     if (!data && error instanceof ProjectApiError && error.status === 404) return <NotFoundScreen project />;
 

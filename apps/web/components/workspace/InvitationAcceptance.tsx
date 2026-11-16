@@ -1,0 +1,12 @@
+"use client";
+import { useEffect,useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { invitationApi, workspaceApi } from "../../lib/workspace-api";
+import { errorMessage } from "../../lib/project-api";
+export function InvitationAcceptance({token}:{token:string}){
+ const [invite,setInvite]=useState<Awaited<ReturnType<typeof invitationApi.preview>>|null>(null),[email,setEmail]=useState(""),[error,setError]=useState(""),[sent,setSent]=useState(false),[busy,setBusy]=useState(false);const router=useRouter();
+ useEffect(()=>{let active=true;if(!/^[a-f0-9]{64}$/.test(token))return;invitationApi.preview(token).then(i=>{if(active)setInvite(i);}).catch(e=>{if(active)setError(errorMessage(e));});workspaceApi.user().then(p=>{if(active)setEmail(p.user.email);}).catch(()=>{});return()=>{active=false;};},[token]);
+ async function submit(){setBusy(true);setError("");try{if(email.toLowerCase()===invite?.email.toLowerCase()){const result=await invitationApi.accept(token);try { localStorage.setItem("kylro-workspace",result.workspaceId); } catch { /* Continue when storage is unavailable. */ }router.replace("/workspace");}else{await invitationApi.signIn(token);setSent(true);}}catch(e){setError(errorMessage(e));}finally{setBusy(false);}}
+ return <main className="ws-gate"><section className="ws-panel ws-settings" style={{width:"min(480px,100%)",textAlign:"left"}}><span className="ws-eyebrow">Kylro · Workspace invitation</span><h1 style={{fontFamily:"Project Sketch",fontSize:32,margin:"16px 0"}}>{invite?`Join ${invite.workspaceName}`:"Review invitation"}</h1>{invite?<><p>Invited as <strong>{invite.role}</strong> for <strong>{invite.email}</strong>.</p><p className="ws-muted">Expires {new Date(invite.expiresAt).toLocaleString()}. Project access is assigned separately.</p>{email&&<p className="ws-muted">Signed in as {email}.</p>}{sent?<p role="status">Check {invite.email} for your sign-in link. After signing in, return here to accept.</p>:<button style={{marginTop:20}} className="ws-button" disabled={busy} onClick={()=>void submit()}>{busy?"Please wait…":email.toLowerCase()===invite.email.toLowerCase()?"Accept invitation":"Email me a sign-in link"}</button>}</>:!error&&<p>{/^[a-f0-9]{64}$/.test(token)?"Loading invitation…":"This invitation link is invalid."}</p>}{error&&<p role="alert" className="ws-error" style={{marginTop:16}}>{error}</p>}<p style={{marginTop:24}}><Link href="/workspace">Back to workspace →</Link></p></section></main>;
+}

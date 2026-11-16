@@ -1,5 +1,6 @@
 "use client";
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import { API_URL } from "../../lib/api";
 import { useRouter } from "next/navigation";
 import { workspaceApi, type Workspace, type WorkspaceData } from "../../lib/workspace-api";
 import { errorMessage, ProjectApiError } from "../../lib/project-api";
@@ -23,7 +24,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         try {
             const [profile, list] = await Promise.all([workspaceApi.user(), workspaceApi.list()]);
             setUser(profile.user); setWorkspaces(list);
-            let saved = ""; try { saved = localStorage.getItem("kylro-workspace") || ""; } catch { /* Storage can be unavailable in private browsing. */ }
+            let saved = ""; try { saved = new URLSearchParams(window.location.search).get("workspace") || localStorage.getItem("kylro-workspace") || ""; } catch { /* Storage can be unavailable in private browsing. */ }
             const choice = list.find(w => w.id === (preferred || selected.current || saved))?.id || list[0]?.id || "";
             if (choice !== selected.current) select(choice);
             else if (!choice) { setLoading(false); setError(""); }
@@ -41,6 +42,19 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     useEffect(() => { void reload(); }, [reload]);
     // eslint-disable-next-line react-hooks/set-state-in-effect
     useEffect(() => { void refresh(); }, [refresh]);
+    useEffect(() => {
+        const choose = (event: Event) => { const id = (event as CustomEvent<string>).detail; if (workspaces.some(ws => ws.id === id)) select(id); };
+        window.addEventListener("kylro-select-workspace", choose);
+        return () => window.removeEventListener("kylro-select-workspace", choose);
+    }, [workspaces, select]);
+    const userId = user?.id;
+    useEffect(() => {
+        if (!userId) return;
+        const events = new EventSource(`${API_URL}/events`, { withCredentials: true });
+        events.addEventListener("change", () => { void reload(); void refresh(); });
+        events.addEventListener("session-ended", () => { events.close(); router.replace("/login"); });
+        return () => events.close();
+    }, [userId, reload, refresh, router]);
     if (!user) return <div className="ws-gate"><h1>Kylro</h1><p role={error ? "alert" : "status"}>{error || "Opening your workspace…"}</p>{error && <button onClick={() => void reload()}>Try again</button>}</div>;
     return <WorkspaceContext.Provider value={{ user, workspaces, data, loading, error, select, refresh, reload }}>{children}</WorkspaceContext.Provider>;
 }
