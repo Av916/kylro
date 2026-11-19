@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Klyro — Build what matters",
-  description: "AI-powered developer workspace for teams that ship.",
+  title: "Kylro — Make space for good work",
+  description: "A calm workspace for planning projects, tracking progress, and working together.",
 };
 
 export default function RootLayout({
