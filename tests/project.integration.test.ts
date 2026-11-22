@@ -230,4 +230,70 @@ describe.skipIf(!testDatabaseUrl)("Project API with PostgreSQL", () => {
         } finally { controller.abort(); await reader.cancel().catch(() => {}); }
     }, 30000);
 
+    test("workspace creators and delegated admins manage only their workspace and its projects", async () => {
+        async function call(path: string, user: string, method = "GET", body?: unknown) {
+            return fetch(`${base}/api${path}`, { method, headers: { Cookie: cookies[user]!, "Content-Type": "application/json" }, body: body === undefined ? undefined : JSON.stringify(body) });
+        }
+        const first = await call("/workspaces", "owner", "POST", { name: "Hierarchy A", slug: `hierarchy-a-${schema.slice(-12)}` });
+        const second = await call("/workspaces", "candidate", "POST", { name: "Hierarchy B", slug: `hierarchy-b-${schema.slice(-12)}` });
+        expect(first.status).toBe(201); expect(second.status).toBe(201);
+        const a = (await first.json()).data.id;
+        const b = (await second.json()).data.id;
+        expect((await (await call(`/workspaces/${a}`, "owner")).json()).data.role).toBe("owner");
+        for (const person of ["member", "candidate", "viewer", "outsider"]) {
+            expect((await call(`/workspaces/${a}/members`, "owner", "POST", { email: `${person}@example.test`, role: person === "member" ? "admin" : "member" })).status).toBe(201);
+        }
+        expect((await call(`/workspaces/${a}/members/${ids.owner}`, "member", "PATCH", { role: "member" })).status).toBe(403);
+        expect((await call(`/workspaces/${a}/members/${ids.viewer}`, "member", "PATCH", { role: "admin" })).status).toBe(403);
+        expect((await call(`/workspaces/${b}/dashboard`, "member")).status).toBe(404);
+        expect((await call(`/workspaces/${b}/members`, "member", "POST", { email: "viewer@example.test" })).status).toBe(404);
+
+        // Projects created by another member still fall under workspace authority.
+        const created = [];
+        for (const name of ["Project P", "Project Q"]) {
+            const response = await call(`/workspaces/${a}/projects`, "candidate", "POST", { name });
+            expect(response.status).toBe(201);
+            created.push((await response.json()).data.project.id);
+        }
+        const [p, q] = created;
+        for (const manager of ["owner", "member"]) {
+            const access = (await (await call(`/projects/${p}`, manager)).json()).data;
+            expect(access.role).toBe(manager === "owner" ? "owner" : "admin");
+            expect(access.canManageAdmins).toBe(true);
+            expect((await (await call(`/workspaces/${a}/dashboard`, manager)).json()).data.projects).toHaveLength(2);
+            expect((await (await call(`/workspaces/${a}/projects`, manager)).json()).data).toHaveLength(2);
+        }
+        expect((await call(`/projects/${p}/members`, "member", "POST", { userId: ids.viewer, role: "admin" })).status).toBe(201);
+        expect((await call(`/projects/${p}/members`, "owner", "POST", { userId: ids.outsider, role: "viewer" })).status).toBe(201);
+        expect((await call(`/projects/${q}/members`, "member", "POST", { userId: ids.outsider, role: "admin" })).status).toBe(201);
+        expect((await call(`/projects/${q}`, "viewer")).status).toBe(404);
+        expect((await call(`/workspaces/${a}/members`, "viewer", "POST", { email: "member@example.test" })).status).toBe(403);
+        expect((await (await call(`/workspaces/${a}/dashboard`, "viewer")).json()).data.projects.map((item: { id: string }) => item.id)).toEqual([p]);
+        expect((await (await call(`/projects/${p}`, "viewer")).json()).data.canManageAdmins).toBe(false);
+        expect((await (await call(`/projects/${p}`, "outsider")).json()).data.role).toBe("viewer");
+        expect((await (await call(`/projects/${q}`, "outsider")).json()).data.role).toBe("admin");
+        expect((await call(`/projects/${p}/members/${ids.outsider}`, "viewer", "PATCH", { role: "admin" })).status).toBe(403);
+        expect((await call(`/projects/${p}/members`, "viewer", "POST", { userId: ids.member, role: "admin" })).status).toBe(403);
+        expect((await call(`/projects/${p}/members/${ids.viewer}`, "viewer", "DELETE")).status).toBe(403);
+        expect((await call(`/projects/${p}/members/${ids.candidate}`, "member", "DELETE")).status).toBe(403);
+        expect((await call(`/projects/${p}/members/${ids.outsider}`, "viewer", "PATCH", { role: "member" })).status).toBe(200);
+        expect((await call(`/projects/${p}/members/${ids.outsider}`, "member", "PATCH", { role: "admin" })).status).toBe(200);
+        expect((await call(`/projects/${p}/members/${ids.outsider}`, "viewer", "PATCH", { role: "member" })).status).toBe(403);
+        expect((await call(`/projects/${p}/members/${ids.outsider}`, "viewer", "DELETE")).status).toBe(403);
+        expect((await call(`/projects/${p}/members/${ids.outsider}`, "member", "DELETE")).status).toBe(200);
+
+        // Demotion removes inherited access immediately; explicit project teams survive.
+        expect((await call(`/workspaces/${a}/members/${ids.member}`, "owner", "PATCH", { role: "member" })).status).toBe(200);
+        expect((await call(`/projects/${p}`, "member")).status).toBe(404);
+        expect((await (await call(`/workspaces/${a}/dashboard`, "member")).json()).data.projects).toHaveLength(0);
+        // Simulate a stale project row: workspace membership remains mandatory.
+        const { db, schemas, and, eq } = database;
+        await db.delete(schemas.workspaceMembers).where(and(eq(schemas.workspaceMembers.workspaceId, a), eq(schemas.workspaceMembers.userId, ids.viewer)));
+        expect((await call(`/projects/${p}`, "viewer")).status).toBe(404);
+        expect((await call(`/projects/${p}/members`, "viewer")).status).toBe(404);
+        expect((await call(`/projects/${p}/issues`, "viewer")).status).toBe(404);
+        expect((await call(`/projects/${q}`, "member", "DELETE")).status).toBe(404);
+        expect((await call(`/projects/${q}`, "owner", "DELETE")).status).toBe(200);
+    }, 180000);
+
 });

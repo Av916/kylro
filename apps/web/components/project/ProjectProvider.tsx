@@ -11,7 +11,7 @@ import { IssueDialog } from "./IssueDialog";
 
 interface ProjectContextValue {
     project: Project; role: ProjectRole; members: ProjectMember[]; issues: Issue[];
-    canEdit: boolean; canManage: boolean;
+    canEdit: boolean; canManage: boolean; canManageAdmins: boolean;
     openIssue: (issue?: Issue, status?: IssueStatus) => void;
     saveIssue: (issue: Issue) => void;
     removeIssue: (id: string) => void;
@@ -28,7 +28,7 @@ export function useProject() {
 export function ProjectProvider({ projectId, children }: { projectId: string; children: ReactNode }) {
     const router = useRouter();
     const revision = useRef(0);
-    const [data, setData] = useState<{ project: Project; role: ProjectRole; members: ProjectMember[]; issues: Issue[] } | null>(null);
+    const [data, setData] = useState<{ project: Project; role: ProjectRole; canManageAdmins: boolean; members: ProjectMember[]; issues: Issue[] } | null>(null);
     const [error, setError] = useState<Error | null>(null);
     const [attempt, setAttempt] = useState(0);
     const [editor, setEditor] = useState<{ issue?: Issue; status: IssueStatus } | null>(null);

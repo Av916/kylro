@@ -28,7 +28,7 @@ export async function request<T>(path: string, method = "GET", body?: unknown): 
 
 const path = (projectId: string) => `/projects/${encodeURIComponent(projectId)}`;
 export const projectApi = {
-    get: (id: string) => request<{ project: Project; role: ProjectRole }>(path(id)),
+    get: (id: string) => request<{ project: Project; role: ProjectRole; canManageAdmins: boolean }>(path(id)),
     remove: (id: string) => request<void>(path(id), "DELETE"),
     rename: (id: string, name: string) => request<Project>(path(id), "PATCH", { name }),
     members: (id: string) => request<ProjectMember[]>(`${path(id)}/members`),

@@ -13,7 +13,11 @@ The project area uses the workspace's paper, graphite, and sage palette, with lo
 
 ## Permissions
 
-Every API operation requires an authenticated project member. Viewers can read issues and comments. Members can create and edit issues and post comments. Owners and admins can delete issues and manage project settings and membership. The owner cannot be removed or demoted through member management.
+Every API operation requires authentication and current membership in the parent workspace. Workspace creators become owners. Workspace owners have top authority over all projects in their workspace; workspace admins can access and manage all its projects and appoint project admins. These permissions never extend to another workspace.
+
+Project creators become project owners and can appoint project admins. Ordinary workspace members and viewers need explicit project membership to access a project. Each project has its own team and roles: viewers read issues and comments; members create and edit issues and post comments; project admins also delete issues and manage settings, members, and viewers. Only workspace owners, workspace admins, and project owners can appoint, demote, or remove project admins. Project owners cannot be removed or demoted through member management. Workspace owners and project owners can delete projects.
+
+Workspace and project roles are independent. A workspace viewer with an explicit project member role can contribute to that project. Demoting a workspace admin removes inherited access immediately; any explicit project memberships still apply. Removing workspace membership revokes project access even if a stale project membership exists.
 
 The member picker includes eligible people already in the workspace. It does not send email invitations.
 
@@ -53,12 +57,12 @@ bun run build -- --webpack
 - Create and switch workspaces; rename or change their slug. Owners can delete a workspace after typing its name to confirm.
 - Search projects, issues, and teammates with the header or Ctrl/Cmd+K.
 - Create projects and issues; filter workspace issues and update status. Open an issue in its project for details, assignment, and comments.
-- Owners/admins can add existing Kylro users by email. This adds workspace membership; it does not send an invitation or automatically grant project access.
+- Owners/admins can add existing Kylro users by email. This adds workspace membership; it does not send an invitation. Workspace admins inherit management access to all projects within that workspace; other members need explicit project membership.
 - Only owners appoint/manage admins. Owners and your own membership are protected. Removing a member removes their project memberships and clears assignments transactionally; project owners must resolve their owned projects before removal.
 - Workspace viewers cannot create projects. Project roles independently govern editing within each project.
 - The closed-by-default activity drawer overlays the content. Its quick actions, the recent-updates bell, and sign-out all work. Updates summarize existing records, rather than representing a durable notification or audit history.
 
-Additional endpoints: `GET /api/workspaces/:workspaceId/dashboard`, `POST /api/workspaces/:workspaceId/members`, and `PATCH/DELETE /api/workspaces/:workspaceId/members/:userId`. The dashboard only returns projects and issues accessible through project membership. No database migration is required.
+Additional endpoints: `GET /api/workspaces/:workspaceId/dashboard`, `POST /api/workspaces/:workspaceId/members`, and `PATCH/DELETE /api/workspaces/:workspaceId/members/:userId`. The dashboard returns all projects and their issues for workspace owners/admins, and only assigned projects and their issues for other members. No database migration is required.
 
 The integration suite also checks workspace dashboard scoping, real totals, member validation, owner protection, viewer creation restrictions, and assignment cleanup/access revocation after removal.
 

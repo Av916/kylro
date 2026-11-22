@@ -4,6 +4,7 @@ import { and, db, eq, inArray, schemas, sql } from "@kylro/database";
 import ApiError from "../../shared/utils/ApiError.js";
 import ApiResponse from "../../shared/utils/ApiResponse.js";
 import { validateRequest } from "../../shared/middlewares/validateRequest.js";
+import { projectService } from "../project/project.service.js";
 import { workspaceService } from "./workspace.service.js";
 import { workspaceIdSchema } from "./workspace.validation.js";
 
@@ -19,9 +20,7 @@ async function manage(userId: string, workspaceId: string) {
 workspaceDataRoutes.get("/:workspaceId/dashboard", validateRequest({ params: workspaceIdSchema }), handle(async (req, res) => {
     const workspaceId = String(req.params.workspaceId);
     const workspace = await workspaceService.getWorkspace(req.user!.id, workspaceId);
-    const projects = await db.select({ id: schemas.projects.id, name: schemas.projects.name, workspaceId: schemas.projects.workspaceId, createdAt: schemas.projects.createdAt, updatedAt: schemas.projects.updatedAt, role: schemas.projectMembers.role })
-        .from(schemas.projects).innerJoin(schemas.projectMembers, eq(schemas.projectMembers.projectId, schemas.projects.id))
-        .where(and(eq(schemas.projects.workspaceId, workspaceId), eq(schemas.projectMembers.userId, req.user!.id)));
+    const projects = await projectService.getProjects(req.user!.id, workspaceId);
     const ids = projects.map(p => p.id);
     const [issues, projectMembers, members] = await Promise.all([
         ids.length ? db.select().from(schemas.issues).where(inArray(schemas.issues.projectId, ids)) : [],

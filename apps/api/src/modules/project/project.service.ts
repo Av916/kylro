@@ -40,7 +40,7 @@ export class ProjectService {
      */
     async getProjects(userId: string, workspaceId: string) {
         // Verify user is a member of the workspace
-        await workspaceService.getWorkspace(userId, workspaceId);
+        const workspace = await workspaceService.getWorkspace(userId, workspaceId);
 
         const projects = await db
             .select({
@@ -49,64 +49,50 @@ export class ProjectService {
                 workspaceId: schemas.projects.workspaceId,
                 createdAt: schemas.projects.createdAt,
                 updatedAt: schemas.projects.updatedAt,
+                role: schemas.projectMembers.role,
             })
             .from(schemas.projects)
-            // Join to ensure they are also members of the project? 
-            // Wait, does the user need to be a project member to see the project?
-            // "Return projects belonging to that workspace."
-            // But they might only be a member of SOME projects in that workspace?
-            // "GET /api/workspaces/:workspaceId/projects -> Return projects belonging to that workspace. Do NOT return projects from another workspace."
-            // "A user must NOT be able to create or access a project in a workspace where they are not a member."
-            // Usually, any workspace member can see all projects in the workspace. Let's return all projects in this workspace where the user is a project member. Or just all projects in the workspace? The requirement says: "Return projects belonging to that workspace." But it also says: "A project should have project members" and "Access should be determined through project_members."
-            // Let's only return projects where the user is a project member!
-            .innerJoin(
+            // Project membership is separate from workspace membership.
+            .leftJoin(
                 schemas.projectMembers,
-                eq(schemas.projects.id, schemas.projectMembers.projectId)
+                and(eq(schemas.projects.id, schemas.projectMembers.projectId), eq(schemas.projectMembers.userId, userId))
             )
             .where(
                 and(
                     eq(schemas.projects.workspaceId, workspaceId),
-                    eq(schemas.projectMembers.userId, userId)
+                    workspace.role === "owner" || workspace.role === "admin"
+                        ? undefined
+                        : eq(schemas.projectMembers.userId, userId)
                 )
             );
 
-        return projects;
+        return projects.map(project => ({ ...project, role: this.effectiveRole(workspace.role, project.role)! }));
     }
 
     /**
-     * Get a single project, verifying project membership.
+     * Get a project through explicit membership or inherited workspace authority.
      */
     async getProject(userId: string, projectId: string) {
-        const membership = await db
-            .select({
-                project: {
-                    id: schemas.projects.id,
-                    name: schemas.projects.name,
-                    workspaceId: schemas.projects.workspaceId,
-                    createdAt: schemas.projects.createdAt,
-                    updatedAt: schemas.projects.updatedAt,
-                },
-                role: schemas.projectMembers.role,
-            })
+        const [project] = await db.select().from(schemas.projects)
+            .where(eq(schemas.projects.id, projectId)).limit(1);
+        if (!project) throw ApiError.notFound("Project not found or you do not have access");
+
+        const workspace = await workspaceService.getWorkspace(userId, project.workspaceId);
+        const [membership] = await db.select({ role: schemas.projectMembers.role })
             .from(schemas.projectMembers)
-            .innerJoin(
-                schemas.projects,
-                eq(schemas.projectMembers.projectId, schemas.projects.id)
-            )
-            .where(
-                and(
-                    eq(schemas.projectMembers.userId, userId),
-                    eq(schemas.projectMembers.projectId, projectId)
-                )
-            )
+            .where(and(eq(schemas.projectMembers.userId, userId), eq(schemas.projectMembers.projectId, projectId)))
             .limit(1);
+        const role = this.effectiveRole(workspace.role, membership?.role);
+        if (!role) throw ApiError.notFound("Project not found or you do not have access");
 
-        const data = membership[0];
-        if (!data) {
-            throw ApiError.notFound("Project not found or you do not have access");
-        }
+        return { project, role, canManageAdmins: workspace.role === "owner" || workspace.role === "admin" || membership?.role === "owner" };
+    }
 
-        return data;
+    private effectiveRole(workspaceRole: string, projectRole?: "owner" | "admin" | "member" | "viewer" | null) {
+        if (workspaceRole === "owner") return "owner" as const;
+        if (projectRole === "owner") return "owner" as const;
+        if (workspaceRole === "admin") return "admin" as const;
+        return projectRole;
     }
 
     /**
@@ -136,13 +122,13 @@ export class ProjectService {
     }
 
     /**
-     * Delete a project. Requires owner role.
+     * Delete a project. Requires workspace owner or project owner role.
      */
     async deleteProject(userId: string, projectId: string) {
         const { role } = await this.getProject(userId, projectId);
 
         if (role !== "owner") {
-            throw ApiError.forbidden("Only the project owner can delete the project");
+            throw ApiError.forbidden("Only the workspace owner or project owner can delete the project");
         }
 
         const [deletedProject] = await db

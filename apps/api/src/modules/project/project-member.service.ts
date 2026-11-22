@@ -50,7 +50,7 @@ export class ProjectMemberService {
      */
     async addMember(userId: string, projectId: string, data: AddProjectMemberInput) {
         // Verify current user's role
-        const { project, role } = await projectService.getProject(userId, projectId);
+        const { project, role, canManageAdmins } = await projectService.getProject(userId, projectId);
 
         if (role !== "owner" && role !== "admin") {
             throw ApiError.forbidden("You do not have permission to add members to this project");
@@ -58,6 +58,10 @@ export class ProjectMemberService {
 
         if ((data.role as string) === "owner") {
             throw ApiError.forbidden("Cannot assign owner role through this endpoint");
+        }
+
+        if (data.role === "admin" && !canManageAdmins) {
+            throw ApiError.forbidden("Only workspace owners, workspace admins, and the project owner can appoint project admins");
         }
 
         // Verify target user is part of the workspace
@@ -100,7 +104,7 @@ export class ProjectMemberService {
      * Requires current user to be owner or admin.
      */
     async updateMemberRole(userId: string, projectId: string, targetUserId: string, data: UpdateProjectMemberInput) {
-        const { role: currentUserRole } = await projectService.getProject(userId, projectId);
+        const { role: currentUserRole, canManageAdmins } = await projectService.getProject(userId, projectId);
 
         if (currentUserRole !== "owner" && currentUserRole !== "admin") {
             throw ApiError.forbidden("You do not have permission to update member roles");
@@ -131,6 +135,10 @@ export class ProjectMemberService {
             throw ApiError.forbidden("Cannot modify the role of the project owner");
         }
 
+        if (!canManageAdmins && (member.role === "admin" || data.role === "admin")) {
+            throw ApiError.forbidden("Only workspace owners, workspace admins, and the project owner can manage project admins");
+        }
+
         const [updatedMember] = await db
             .update(schemas.projectMembers)
             .set({
@@ -153,7 +161,7 @@ export class ProjectMemberService {
      * Requires current user to be owner or admin.
      */
     async removeMember(userId: string, projectId: string, targetUserId: string) {
-        const { role: currentUserRole } = await projectService.getProject(userId, projectId);
+        const { role: currentUserRole, canManageAdmins } = await projectService.getProject(userId, projectId);
 
         if (currentUserRole !== "owner" && currentUserRole !== "admin") {
             throw ApiError.forbidden("You do not have permission to remove members");
@@ -178,6 +186,10 @@ export class ProjectMemberService {
 
         if (member.role === "owner") {
             throw ApiError.forbidden("Cannot remove the project owner");
+        }
+
+        if (member.role === "admin" && !canManageAdmins) {
+            throw ApiError.forbidden("Only workspace owners, workspace admins, and the project owner can remove project admins");
         }
 
         await db.transaction(async (tx) => {
