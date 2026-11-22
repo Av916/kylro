@@ -114,9 +114,9 @@
   position: relative;
   padding: 30px 23px 23px;
   flex-shrink: 0;
-  border: 1px solid #dbddca;
+  border: 1px solid light-dark(#dbddca, var(--c-border));
   border-radius: 3px 6px 7px 3px;
-  box-shadow: 4px 5px 0 #deded24d, 1px 2px 3px #33382c0a;
+  box-shadow: 4px 5px 0 light-dark(#deded24d, rgb(0 0 0 / 0.30)), 1px 2px 3px light-dark(#33382c0a, rgb(0 0 0 / 0.04));
   transform-origin: 50% 0%;
 }
 
@@ -128,14 +128,14 @@
   left: calc(50% - 34px);
   width: 68px;
   height: 22px;
-  background: #bac4a88c;
+  background: light-dark(#bac4a88c, color-mix(in srgb, var(--c-card) 55%, transparent));
   transform: rotate(-4deg);
   clip-path: polygon(2% 4%, 99% 0, 97% 96%, 0 100%);
   pointer-events: none;
 }
 
-.activityNote { background: #f3f1e6; transform: rotate(-.5deg); }
-.toolsNote { background: #eeeedf; transform: rotate(.6deg); }
+.activityNote { background: light-dark(#f3f1e6, var(--c-card)); transform: rotate(-.5deg); }
+.toolsNote { background: light-dark(#eeeedf, var(--c-card)); transform: rotate(.6deg); }
 .toolsNote::before { transform: rotate(3deg); }
 .eyebrow {
   display: block;
@@ -143,37 +143,37 @@
   font-size: 9px;
   font-weight: 600;
   letter-spacing: .17em;
-  color: #797e6d;
+  color: light-dark(#797e6d, var(--c-ink-3));
 }
 .card h3 {
   font-family: 'Project Sketch', serif;
   font-size: 29px;
   font-weight: 700;
   line-height: 1.15;
-  color: #647359;
+  color: light-dark(#647359, var(--c-ink-3));
 }
-.card :global(.ws-section-heading) { align-items: flex-start; gap: 9px; }
-.card :global(.ws-section-heading)>a { font-size: 10px; white-space: nowrap; padding-top: 7px; }
-.card :global(.ws-muted), .noteDescription { color: #7a7e6d; font-size: 11px; line-height: 1.8; }
+.card:global(.ws-section-heading) { align-items: flex-start; gap: 9px; }
+.card:global(.ws-section-heading)>a { font-size: 10px; white-space: nowrap; padding-top: 7px; }
+.card:global(.ws-muted), .noteDescription { color: light-dark(#7a7e6d, var(--c-ink-3)); font-size: 11px; line-height: 1.8; }
 .noteDescription { margin-top: 9px; }
-.card :global(.ws-activity) { margin-top: 13px; }
-.card :global(.ws-activity>a) { border-bottom-color: #d2d5c4; }
-.card :global(.ws-activity strong) { font-size: 12px; }
-.card :global(.ws-activity-dot) { background: #e4e8d9; border: 1px solid #d1d9c5; }
-.card :global(.ws-quick-actions) { margin-top: 20px; gap: 9px; }
-.card :global(.ws-quick-actions)>button,
+.card:global(.ws-activity) { margin-top: 13px; }
+.card:global(.ws-activity>a) { border-bottom-color: light-dark(#d2d5c4, var(--c-border)); }
+.card:global(.ws-activity strong) { font-size: 12px; }
+.card:global(.ws-activity-dot) { background: light-dark(#e4e8d9, var(--c-card)); border: 1px solid light-dark(#d1d9c5, var(--c-border)); }
+.card:global(.ws-quick-actions) { margin-top: 20px; gap: 9px; }
+.card:global(.ws-quick-actions)>button,
 .card :global(.ws-quick-actions)>a {
-  background: #fcfbf766;
-  border-color: #d2d7c4;
+  background: light-dark(#fcfbf766, color-mix(in srgb, var(--c-card) 40%, transparent));
+  border-color: light-dark(#d2d7c4, var(--c-border));
   border-radius: 6px 8px 7px 5px;
   padding: 11px 13px;
-  color: #505d45;
+  color: light-dark(#505d45, var(--c-ink));
   font-size: 12px;
   transition: background .15s, border-color .15s;
 }
-.card :global(.ws-quick-actions)>button:hover,
-.card :global(.ws-quick-actions)>a:hover { background: #fcfbf7cc; border-color: #aeb99e; }
-.card .signature { margin-top: 10px; text-align: right; color: #7f896e; font-family: 'Project Hand', cursive; font-size: 26px; }
+.card:global(.ws-quick-actions)>button:hover,
+.card :global(.ws-quick-actions)>a:hover { background: light-dark(#fcfbf7cc, color-mix(in srgb, var(--c-card) 80%, transparent)); border-color: light-dark(#aeb99e, var(--c-border)); }
+.card .signature { margin-top: 10px; text-align: right; color: light-dark(#7f896e, var(--c-ink-3)); font-family: 'Project Hand', cursive; font-size: 26px; }
 @media (max-width: 420px) {
   .content { padding-left: 21px; padding-right: 21px; }
   .card { padding: 28px 19px 21px; }

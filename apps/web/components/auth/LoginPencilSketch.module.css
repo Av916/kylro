@@ -2,10 +2,10 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #F7F5EF;
-  color: #111111;
+  background-color: light-dark(#f7f5ef, var(--c-page));
+  color: light-dark(#111111, var(--c-ink));
   overflow: hidden;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 /* ── HEADER ── */
@@ -25,20 +25,20 @@
 }
 
 .logoText {
-  font-family: 'Playfair Display', serif;
+  font-family: "Playfair Display", serif;
   font-weight: 600;
   font-size: clamp(24px, 2.8vw, 34px);
   line-height: 1;
-  color: #111111;
+  color: light-dark(#111111, var(--c-ink));
   letter-spacing: -0.02em;
 }
 
 .tagline {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 5px;
-  color: #77736B;
+  color: light-dark(#77736b, var(--c-ink-3));
   margin-top: 3px;
 }
 
@@ -55,21 +55,21 @@
 }
 
 .navLink {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 14px;
-  color: #111111;
+  color: light-dark(#111111, var(--c-ink));
   text-decoration: none;
   position: relative;
 }
 
 .navLink::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -3px;
   left: 0;
   width: 0;
   height: 1px;
-  background: #111111;
+  background: light-dark(#111111, var(--c-ink));
   transition: width 0.3s ease;
 }
 
@@ -78,11 +78,11 @@
 }
 
 .signInBtn {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 14px;
-  color: #111111;
+  color: light-dark(#111111, var(--c-ink));
   text-decoration: none;
-  border: 1px solid #222222;
+  border: 1px solid light-dark(#222222, var(--c-border-2));
   border-radius: 8px;
   padding: 8px 22px;
   transition: all 0.2s ease;
@@ -90,8 +90,8 @@
 }
 
 .signInBtn:hover {
-  background: #222222;
-  color: #F7F5EF;
+  background: light-dark(#222222, var(--c-ink));
+  color: light-dark(#f7f5ef, var(--c-card));
 }
 
 /* ── MAIN GRID ── */
@@ -127,10 +127,10 @@
   position: absolute;
   top: -8px;
   left: -85px;
-  font-family: 'Caveat', cursive;
+  font-family: "Caveat", cursive;
   font-size: clamp(16px, 1.8vw, 22px);
   line-height: 1.2;
-  color: #3a3a3a;
+  color: light-dark(#3a3a3a, var(--c-ink));
   transform: rotate(-7deg);
   user-select: none;
   pointer-events: none;
@@ -138,12 +138,12 @@
 
 /* "Welcome back" */
 .heading {
-  font-family: 'Playfair Display', serif;
+  font-family: "Playfair Display", serif;
   font-weight: 700;
   font-size: clamp(30px, 3.5vw, 44px);
   line-height: 1.1;
   letter-spacing: -0.02em;
-  color: #111111;
+  color: light-dark(#111111, var(--c-ink));
   margin: 0;
 }
 
@@ -153,48 +153,50 @@
   height: 5px;
   margin-top: 4px;
   margin-bottom: 6px;
-  color: #77736B;
+  color: light-dark(#77736b, var(--c-ink-3));
 }
 
 /* Subtitle */
 .subtitle {
-  font-family: 'Playfair Display', serif;
+  font-family: "Playfair Display", serif;
   font-size: clamp(14px, 1.4vw, 17px);
   line-height: 1.5;
-  color: #333333;
+  color: light-dark(#333333, var(--c-ink));
   margin: 0 0 1.5vh;
 }
 
 /* ── AUTH CARD ── */
 .card {
-  background: rgba(250, 249, 245, 0.85);
+  background: color-mix(in srgb, var(--c-card) 85%, transparent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid #D6D3C8;
+  border: 1px solid light-dark(#d6d3c8, var(--c-border));
   border-radius: 12px;
   padding: 2.5vh 32px 2vh;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.02);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.04),
+    0 2px 8px rgba(0, 0, 0, 0.02);
 }
 
 .errorMsg {
   margin-bottom: 1.2vh;
   padding: 8px 12px;
-  background: #FDF6F6;
-  border: 1px solid #E0BBBB;
-  color: #8B3535;
+  background: light-dark(#fdf6f6, var(--c-card));
+  border: 1px solid light-dark(#e0bbbb, var(--c-border));
+  color: light-dark(#8b3535, #da9f9f);
   border-radius: 4px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 13px;
 }
 
 .successMsg {
   margin-bottom: 1.2vh;
   padding: 8px 12px;
-  background: #F6FDF8;
-  border: 1px solid #B4D9BB;
-  color: #2D6B3E;
+  background: light-dark(#f6fdf8, var(--c-card));
+  border: 1px solid light-dark(#b4d9bb, var(--c-border));
+  color: light-dark(#2d6b3e, #a2d8b0);
   border-radius: 4px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 13px;
 }
 
@@ -202,13 +204,13 @@
 .googleBtn {
   width: 100%;
   height: clamp(40px, 5vh, 48px);
-  background: #ffffff;
-  border: 1px solid #D6D3C8;
+  background: light-dark(#ffffff, var(--c-card));
+  border: 1px solid light-dark(#d6d3c8, var(--c-border));
   border-radius: 8px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 15px;
   font-weight: 500;
-  color: #111111;
+  color: light-dark(#111111, var(--c-ink));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -219,8 +221,8 @@
 }
 
 .googleBtn:hover {
-  background: #FAFAFA;
-  border-color: #C8C5BE;
+  background: light-dark(#fafafa, var(--c-card));
+  border-color: light-dark(#c8c5be, var(--c-border));
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
   transform: translateY(-1px);
 }
@@ -236,13 +238,13 @@
 .dividerLine {
   flex: 1;
   height: 1px;
-  background: #C8C5BE;
+  background: light-dark(#c8c5be, var(--c-card));
 }
 
 .dividerText {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 13px;
-  color: #999590;
+  color: light-dark(#999590, var(--c-ink-3));
 }
 
 /* Form */
@@ -254,10 +256,10 @@
 
 .fieldLabel {
   display: block;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: #111111;
+  color: light-dark(#111111, var(--c-ink));
   margin-bottom: 4px;
 }
 
@@ -270,7 +272,7 @@
   left: 12px;
   top: 50%;
   transform: translateY(-50%);
-  color: #999590;
+  color: light-dark(#999590, var(--c-ink-3));
   pointer-events: none;
   display: flex;
 }
@@ -279,24 +281,26 @@
   width: 100%;
   height: clamp(38px, 5vh, 46px);
   padding: 0 14px 0 38px;
-  background: #ffffff;
-  border: 1px solid #D6D3C8;
+  background: light-dark(#ffffff, var(--c-card));
+  border: 1px solid light-dark(#d6d3c8, var(--c-border));
   border-radius: 8px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 14px;
-  color: #111111;
+  color: light-dark(#111111, var(--c-ink));
   outline: none;
   transition: all 0.2s ease;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 
 .emailInput::placeholder {
-  color: #B0ADA6;
+  color: light-dark(#b0ada6, var(--c-ink-3));
 }
 
 .emailInput:focus {
-  border-color: #77736B;
-  box-shadow: 0 0 0 2px rgba(119, 115, 107, 0.1), inset 0 1px 2px rgba(0, 0, 0, 0.02);
+  border-color: light-dark(#77736b, var(--c-border-2));
+  box-shadow:
+    0 0 0 2px rgba(119, 115, 107, 0.1),
+    inset 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 
 /* Submit button */
@@ -305,9 +309,9 @@
   height: clamp(38px, 5vh, 46px);
   border: none;
   border-radius: 8px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 15px;
-  color: #ffffff;
+  color: light-dark(#ffffff, var(--c-card));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -315,19 +319,19 @@
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  background-color: #2a2a2a;
+  background-color: light-dark(#2a2a2a, var(--c-ink));
   background-image:
     repeating-linear-gradient(
       45deg,
-      rgba(255,255,255,0.05),
-      rgba(255,255,255,0.05) 1px,
+      rgba(255, 255, 255, 0.05),
+      rgba(255, 255, 255, 0.05) 1px,
       transparent 1px,
       transparent 3px
     ),
     repeating-linear-gradient(
       -45deg,
-      rgba(0,0,0,0.12),
-      rgba(0,0,0,0.12) 1px,
+      rgba(0, 0, 0, 0.12),
+      rgba(0, 0, 0, 0.12) 1px,
       transparent 1px,
       transparent 3px
     );
@@ -346,9 +350,9 @@
 
 /* Helper text */
 .helperText {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 12px;
-  color: #666666;
+  color: light-dark(#666666, var(--c-ink-3));
   text-align: center;
   margin-top: 1px;
 }
@@ -357,25 +361,25 @@
 .signupRow {
   margin-top: 1.5vh;
   padding-top: 1.2vh;
-  border-top: 1px solid #E0DDD6;
+  border-top: 1px solid light-dark(#e0ddd6, var(--c-border));
   text-align: center;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 13px;
 }
 
 .signupLabel {
-  color: #666666;
+  color: light-dark(#666666, var(--c-ink-3));
 }
 
 .signupLink {
-  color: #111111;
+  color: light-dark(#111111, var(--c-ink));
   text-decoration: underline;
   text-underline-offset: 3px;
   transition: color 0.15s ease;
 }
 
 .signupLink:hover {
-  color: #555555;
+  color: light-dark(#555555, var(--c-ink));
 }
 
 /* ── BOTTOM FEATURES ── */
@@ -395,7 +399,7 @@
 }
 
 .featureIcon {
-  color: #4B4944;
+  color: light-dark(#4b4944, var(--c-ink));
   transition: transform 0.3s ease;
 }
 
@@ -409,10 +413,10 @@
 }
 
 .featureLabel {
-  font-family: 'Caveat', cursive;
+  font-family: "Caveat", cursive;
   font-size: clamp(14px, 1.5vw, 17px);
   line-height: 1.25;
-  color: #4B4944;
+  color: light-dark(#4b4944, var(--c-ink));
   white-space: pre-line;
 }
 
@@ -441,7 +445,12 @@
   bottom: 0;
   left: 0;
   width: 25%;
-  background: linear-gradient(to right, #F7F5EF 0%, #F7F5EF 20%, transparent 100%);
+  background: linear-gradient(
+    to right,
+    light-dark(#f7f5ef, var(--c-page)) 0%,
+    light-dark(#f7f5ef, var(--c-page)) 20%,
+    transparent 100%
+  );
   pointer-events: none;
 }
 
@@ -451,7 +460,11 @@
   left: 0;
   right: 0;
   height: 15%;
-  background: linear-gradient(to bottom, #F7F5EF 0%, transparent 100%);
+  background: linear-gradient(
+    to bottom,
+    light-dark(#f7f5ef, var(--c-page)) 0%,
+    transparent 100%
+  );
   pointer-events: none;
 }
 
@@ -461,7 +474,11 @@
   left: 0;
   right: 0;
   height: 18%;
-  background: linear-gradient(to top, #F7F5EF 0%, transparent 100%);
+  background: linear-gradient(
+    to top,
+    light-dark(#f7f5ef, var(--c-page)) 0%,
+    transparent 100%
+  );
   pointer-events: none;
 }
 
@@ -471,7 +488,11 @@
   bottom: 0;
   right: 0;
   width: 8%;
-  background: linear-gradient(to left, #F7F5EF 0%, transparent 100%);
+  background: linear-gradient(
+    to left,
+    light-dark(#f7f5ef, var(--c-page)) 0%,
+    transparent 100%
+  );
   pointer-events: none;
 }
 
@@ -500,4 +521,10 @@
   .leftCol {
     padding: 12px 20px 24px;
   }
+}
+
+/* Keep the pencil illustration legible against the dark canvas. */
+:global(.dark) .heroImg {
+  mix-blend-mode: screen;
+  filter: grayscale(1) invert(1) brightness(0.65);
 }

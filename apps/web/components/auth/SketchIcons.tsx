@@ -77,19 +77,19 @@ export function SketchGoogleG({ className = "w-5 h-5" }: { className?: string })
         >
             <path
                 d="M21 12.3c0-.8-.07-1.5-.2-2.3H12v4.3h5.1c-.22 1.2-.9 2.2-1.9 2.9v2.4h3.1c1.8-1.7 2.8-4.1 2.8-7.3z"
-                fill="#2e2d2a"
+                fill="currentColor"
             />
             <path
                 d="M12 21.5c2.6 0 4.8-.9 6.4-2.4l-3.1-2.4c-.9.6-2 .9-3.3.9-2.5 0-4.6-1.7-5.4-4H3.4v2.5C5 19.7 8.2 21.5 12 21.5z"
-                fill="#2e2d2a"
+                fill="currentColor"
             />
             <path
                 d="M6.6 13.6c-.2-.6-.3-1.3-.3-2.1s.1-1.4.3-2.1V6.9H3.4C2.7 8.4 2.3 10.1 2.3 12s.4 3.6 1.1 5.1l3.2-2.5v-1z"
-                fill="#2e2d2a"
+                fill="currentColor"
             />
             <path
                 d="M12 6.5c1.4 0 2.7.5 3.7 1.4l2.8-2.8C16.8 3.5 14.6 2.5 12 2.5 8.2 2.5 5 4.3 3.4 7.4l3.2 2.5c.8-2.3 2.9-3.4 5.4-3.4z"
-                fill="#2e2d2a"
+                fill="currentColor"
             />
         </svg>
     );

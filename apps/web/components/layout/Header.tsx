@@ -1,5 +1,6 @@
 "use client";
 
+import { ThemeToggle } from "../theme/ThemeToggle";
 import React, { useState } from "react";
 import Link from "next/link";
 
@@ -26,6 +27,7 @@ export function Header({ user, sidebarOpen, onToggleSidebar }: HeaderProps) {
         borderBottom: "1px solid var(--c-border)",
       }}
     >
+      <ThemeToggle />
       {/* ── Sidebar toggle (shown when sidebar is present) ── */}
       {onToggleSidebar && (
         <button
@@ -69,7 +71,7 @@ export function Header({ user, sidebarOpen, onToggleSidebar }: HeaderProps) {
             height: 42,
             padding: "0 14px",
             gap: 10,
-            background: "#F8F6F0",
+            background: "var(--c-page)",
             border: "1px solid var(--c-border)",
             borderRadius: 11,
             transition: "border-color 0.15s, box-shadow 0.15s",

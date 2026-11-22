@@ -1,5 +1,6 @@
 "use client";
 
+import { ThemeToggle } from "../theme/ThemeToggle";
 import React, { useState } from "react";
 import Link from "next/link";
 import { SketchMailIcon, SketchGoogleG } from "./SketchIcons";
@@ -98,7 +99,7 @@ export function LoginPencilSketch() {
                     <span className={s.tagline}>Build Together</span>
                 </div>
 
-                <div className={s.headerRight}>
+                <div className={s.headerRight}><ThemeToggle />
                     <nav className={s.nav}>
                         <Link href="/product" className={s.navLink}>Product</Link>
                         <Link href="/pricing" className={s.navLink}>Pricing</Link>

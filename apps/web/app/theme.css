@@ -1,0 +1,134 @@
+/* One palette for pages, dialogs, native controls, and the public preview. */
+:root {
+  color-scheme: light;
+  --radius: 0.625rem;
+  --destructive: #984e40;
+  --c-page: #f7f5ef;
+  --c-sidebar: #f2f0e8;
+  --c-card: #fcfbf7;
+  --c-hover: #eceae1;
+  --c-header: #fcfbf7;
+  --c-ink: #252522;
+  --c-ink-2: #4a4845;
+  --c-ink-3: #77756d;
+  --c-ink-4: #89877e;
+  --c-ink-5: #c0bdb5;
+  --c-border: #d9d6cd;
+  --c-border-2: #c8c4bb;
+  --c-accent: #526b57;
+  --c-accent-soft: #e8eee6;
+  --c-accent-icon: #536b55;
+  --c-danger: #984e40;
+  --c-danger-soft: #f6e9e4;
+  --c-success: #546b46;
+  --c-success-soft: #eef2e8;
+  --c-shadow: rgb(37 37 34 / 12%);
+  --c-overlay: rgb(20 24 20 / 45%);
+  --background: var(--c-page);
+  --foreground: var(--c-ink);
+  --card: var(--c-card);
+  --card-foreground: var(--c-ink);
+  --popover: var(--c-card);
+  --popover-foreground: var(--c-ink);
+  --primary: var(--c-accent);
+  --primary-foreground: var(--c-card);
+  --secondary: var(--c-accent-soft);
+  --secondary-foreground: var(--c-ink);
+  --muted: var(--c-sidebar);
+  --muted-foreground: var(--c-ink-3);
+  --accent: var(--c-accent-soft);
+  --accent-foreground: var(--c-accent);
+  --border: var(--c-border);
+  --input: var(--c-border);
+  --ring: var(--c-accent);
+  --brand: var(--c-accent);
+  --highlight: var(--c-accent);
+  --card-edge: var(--c-border);
+  --card-edge-hover: var(--c-border-2);
+  --card-fill: var(--c-card);
+  --border-strong: var(--c-border-2);
+}
+:root.dark {
+  color-scheme: dark;
+  --c-page: #1e211e;
+  --c-sidebar: #292d29;
+  --c-card: #252925;
+  --c-hover: #333e34;
+  --c-header: #252925;
+  --c-ink: #f2f0e8;
+  --c-ink-2: #d2d4cb;
+  --c-ink-3: #aaa99e;
+  --c-ink-4: #9b9f93;
+  --c-ink-5: #747d70;
+  --c-border: #42483f;
+  --c-border-2: #6b7c65;
+  --c-accent: #b8ccb4;
+  --c-accent-soft: #333e34;
+  --c-accent-icon: #c4d3bd;
+  --c-danger: #e5a79b;
+  --c-danger-soft: #3b2b28;
+  --c-success: #b8ccb4;
+  --c-success-soft: #2c382d;
+  --c-shadow: rgb(0 0 0 / 24%);
+  --c-overlay: rgb(0 0 0 / 65%);
+}
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--c-ink-3);
+  cursor: pointer;
+  transition:
+    color 200ms,
+    background 200ms;
+}
+.theme-toggle:hover {
+  background: var(--c-hover);
+  color: var(--c-ink);
+}
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 3px;
+}
+::selection {
+  background: var(--c-accent-soft);
+  color: var(--c-ink);
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle {
+    transition: none;
+  }
+}
+
+/* Inverted controls keep readable labels; semantic messages remain distinct. */
+:root.dark .ws-button.danger,
+:root.dark .project-button.danger {
+  color: #fff4f0;
+}
+:root.dark .ws-error,
+:root.dark .project-error,
+:root.dark .data-refresh-error {
+  color: var(--c-danger);
+  background: var(--c-danger-soft);
+  border-color: #74554d;
+}
+:root.dark .project-success {
+  color: var(--c-success);
+  background: var(--c-success-soft);
+  border-color: var(--c-border-2);
+}
+:root.dark .k-card-lift {
+  box-shadow: 0 3px 0 var(--c-shadow);
+}
+:root.dark .k-card-lift:hover {
+  box-shadow: 0 4px 0 var(--c-shadow);
+}
+:root.dark .project-dialog::backdrop {
+  background: var(--c-overlay);
+}

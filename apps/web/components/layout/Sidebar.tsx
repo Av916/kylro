@@ -239,8 +239,8 @@ export function Sidebar({ workspace, open, onToggle }: SidebarProps) {
                 gap: open ? 12 : 0,
                 padding: open ? "0 12px" : "0",
                 justifyContent: open ? "flex-start" : "center",
-                background: "#E7E5DC",
-                border: "1px solid #D0CCC1",
+                background: "var(--c-hover)",
+                border: "1px solid var(--c-border)",
               }}
             >
               <div

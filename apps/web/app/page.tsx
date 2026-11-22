@@ -31,7 +31,6 @@ import { Hero } from "@/components/landing/hero";
 import { FeatureBento } from "@/components/landing/feature-bento";
 import { Footer } from "@/components/landing/footer";
 import { SectionHead } from "@/components/landing/section-head";
-import { ThemeProvider } from "@/components/landing/theme-provider";
 import {
   Card,
   CardBody,
@@ -546,213 +545,211 @@ function FeatureVisual({ type }: { type: string }) {
 
 export default function Home() {
   return (
-    <ThemeProvider defaultTheme="light" storageKey="kylro-paper-theme">
-      <MotionConfig reducedMotion="user">
-        <div className={styles.page}>
-          <a className={styles.skipLink} href="#main">
-            Skip to content
-          </a>
+    <MotionConfig reducedMotion="user">
+      <div className={`kylro-landing ${styles.page}`}>
+        <a className={styles.skipLink} href="#main">
+          Skip to content
+        </a>
 
-          <Navbar
-            logo={<Brand />}
-            layout="inline"
-            groups={[
-              { label: "The workspace", href: "#features" },
-              { label: "How it works", href: "#how-it-works" },
-            ]}
-            actions={
-              <Link className={styles.signIn} href="/login">
-                Sign in <ArrowUpRight size={14} />
-              </Link>
-            }
-          />
-          <main id="main" className={styles.main}>
-            <Reveal className={styles.heroWrap}>
-              <Hero
-                className={styles.hero}
-                badge={
-                  <span className={styles.badgeContent}>
-                    <span className={styles.liveDot} /> A little more clarity,
-                    every day <ArrowUpRight size={12} />
-                  </span>
-                }
+        <Navbar
+          logo={<Brand />}
+          layout="inline"
+          groups={[
+            { label: "The workspace", href: "#features" },
+            { label: "How it works", href: "#how-it-works" },
+          ]}
+          actions={
+            <Link className={styles.signIn} href="/login">
+              Sign in <ArrowUpRight size={14} />
+            </Link>
+          }
+        />
+        <main id="main" className={styles.main}>
+          <Reveal className={styles.heroWrap}>
+            <Hero
+              className={styles.hero}
+              badge={
+                <span className={styles.badgeContent}>
+                  <span className={styles.liveDot} /> A little more clarity,
+                  every day <ArrowUpRight size={12} />
+                </span>
+              }
+              title={
+                <>
+                  Less scattered.
+                  <br />
+                  More <Highlight>in sync.</Highlight>
+                </>
+              }
+              primary={{ label: "Start your workspace", href: "/signup" }}
+              secondary={{ label: "Explore the workspace", href: "#preview" }}
+            >
+              Projects, people, and all the little details.
+              <br className={styles.desktopBreak} /> One calm place to{" "}
+              <Highlight>move good work forward.</Highlight>
+            </Hero>
+            <div className={styles.heroNote}>
+              <Check size={13} /> Your ideas. Your people. Your space.
+            </div>
+          </Reveal>
+          <Reveal className={styles.previewWrap} delay={0.15}>
+            <WorkspacePreview />
+          </Reveal>
+          <div className={styles.principles}>
+            <span>
+              <LayoutGrid size={15} /> A clearer view of work
+            </span>
+            <span>
+              <Users size={15} /> Built for working together
+            </span>
+            <span>
+              <ShieldCheck size={15} /> Thoughtfully simple
+            </span>
+          </div>
+          <section
+            id="features"
+            className={styles.featureSection}
+            aria-labelledby="features-title"
+          >
+            <Reveal>
+              <div className={styles.sectionKicker}>
+                <span /> The Kylro workspace
+              </div>
+              <SectionHead
+                id="features-title"
                 title={
                   <>
-                    Less scattered.
+                    Everything you need.
                     <br />
-                    More <Highlight>in sync.</Highlight>
+                    <Highlight>Room to breathe.</Highlight>
                   </>
                 }
-                primary={{ label: "Start your workspace", href: "/signup" }}
-                secondary={{ label: "Explore the workspace", href: "#preview" }}
               >
-                Projects, people, and all the little details.
-                <br className={styles.desktopBreak} /> One calm place to{" "}
-                <Highlight>move good work forward.</Highlight>
-              </Hero>
-              <div className={styles.heroNote}>
-                <Check size={13} /> Your ideas. Your people. Your space.
-              </div>
+                From the first idea to the final checkmark,
+                <br className={styles.desktopBreak} /> keep your people and your
+                projects on the same page.
+              </SectionHead>
             </Reveal>
-            <Reveal className={styles.previewWrap} delay={0.15}>
-              <WorkspacePreview />
-            </Reveal>
-            <div className={styles.principles}>
-              <span>
-                <LayoutGrid size={15} /> A clearer view of work
-              </span>
-              <span>
-                <Users size={15} /> Built for working together
-              </span>
-              <span>
-                <ShieldCheck size={15} /> Thoughtfully simple
-              </span>
-            </div>
-            <section
-              id="features"
-              className={styles.featureSection}
-              aria-labelledby="features-title"
-            >
-              <Reveal>
-                <div className={styles.sectionKicker}>
-                  <span /> The Kylro workspace
-                </div>
-                <SectionHead
-                  id="features-title"
-                  title={
-                    <>
-                      Everything you need.
-                      <br />
-                      <Highlight>Room to breathe.</Highlight>
-                    </>
-                  }
-                >
-                  From the first idea to the final checkmark,
-                  <br className={styles.desktopBreak} /> keep your people and
-                  your projects on the same page.
-                </SectionHead>
-              </Reveal>
-              <FeatureBento className={styles.featureGrid}>
-                {features.map(
-                  ({ icon: Icon, number, title, text, visual }, i) => (
-                    <Reveal
-                      key={number}
-                      delay={(i % 2) * 0.08}
-                      className={styles[`bento${visual}`]}
-                    >
-                      <Card className={styles.featureCard}>
-                        <CardBody className={styles.featureBody}>
-                          <div className={styles.featureTop}>
-                            <span className={styles.featureIcon}>
-                              <Icon size={19} />
-                            </span>
-                            <small>{number}</small>
-                          </div>
-                          <CardTitle>{title}</CardTitle>
-                          <CardText className={styles.featureText}>
-                            {text}
-                          </CardText>
-                          <FeatureVisual type={visual} />
-                        </CardBody>
-                      </Card>
-                    </Reveal>
-                  ),
-                )}
-              </FeatureBento>
-            </section>
-            <section
-              id="how-it-works"
-              className={styles.howSection}
-              aria-labelledby="how-title"
-            >
-              <Reveal>
-                <div className={styles.sectionKicker}>
-                  <span /> From an idea to a little momentum
-                </div>
-                <SectionHead
-                  id="how-title"
-                  title={
-                    <>
-                      Good work starts <Highlight>right here.</Highlight>
-                    </>
-                  }
-                >
-                  A few simple steps. A little more space for what matters.
-                </SectionHead>
-              </Reveal>
-              <div className={styles.steps}>
-                {[
-                  {
-                    title: "Make yourself a space",
-                    description:
-                      "Create a workspace for your team or your next big idea.",
-                    icon: LayoutGrid,
-                  },
-                  {
-                    title: "Bring everyone along",
-                    description:
-                      "Invite your people and give every project a shared home.",
-                    icon: Users,
-                  },
-                  {
-                    title: "Find your next step",
-                    description:
-                      "Create your first issue. Start small, keep moving.",
-                    icon: ArrowUpRight,
-                  },
-                ].map(({ title, description, icon: Icon }, i) => (
-                  <Reveal key={title} delay={i * 0.08} className={styles.step}>
-                    <div className={styles.stepTop}>
-                      <span>0{i + 1}</span>
-                      <Icon size={19} />
-                    </div>
-                    <h3>{title}</h3>
-                    <p>{description}</p>
+            <FeatureBento className={styles.featureGrid}>
+              {features.map(
+                ({ icon: Icon, number, title, text, visual }, i) => (
+                  <Reveal
+                    key={number}
+                    delay={(i % 2) * 0.08}
+                    className={styles[`bento${visual}`]}
+                  >
+                    <Card className={styles.featureCard}>
+                      <CardBody className={styles.featureBody}>
+                        <div className={styles.featureTop}>
+                          <span className={styles.featureIcon}>
+                            <Icon size={19} />
+                          </span>
+                          <small>{number}</small>
+                        </div>
+                        <CardTitle>{title}</CardTitle>
+                        <CardText className={styles.featureText}>
+                          {text}
+                        </CardText>
+                        <FeatureVisual type={visual} />
+                      </CardBody>
+                    </Card>
                   </Reveal>
-                ))}
+                ),
+              )}
+            </FeatureBento>
+          </section>
+          <section
+            id="how-it-works"
+            className={styles.howSection}
+            aria-labelledby="how-title"
+          >
+            <Reveal>
+              <div className={styles.sectionKicker}>
+                <span /> From an idea to a little momentum
               </div>
-            </section>
-            <Reveal className={styles.closing}>
-              <div className={styles.closingSymbol}>
-                <Command size={26} />
-              </div>
-              <p>A little less noise. A little more possibility.</p>
-              <h2>
-                Make space for <Highlight>your best work.</Highlight>
-              </h2>
-              <span>Your next chapter starts with a workspace.</span>
-              <Button asChild variant="solid" size="lg">
-                <Link href="/signup">Let’s get started</Link>
-              </Button>
-              <a href="#preview" className={styles.backToPreview}>
-                Take another look <ArrowDown size={12} />
-              </a>
+              <SectionHead
+                id="how-title"
+                title={
+                  <>
+                    Good work starts <Highlight>right here.</Highlight>
+                  </>
+                }
+              >
+                A few simple steps. A little more space for what matters.
+              </SectionHead>
             </Reveal>
-          </main>
-          <Footer
-            className={styles.footer}
-            logo={<Brand />}
-            owner="Kylro"
-            tagline="A calmer way to work, together."
-            sections={[
-              {
-                title: "Explore",
-                links: [
-                  { label: "The workspace", href: "#features" },
-                  { label: "How it works", href: "#how-it-works" },
-                ],
-              },
-              {
-                title: "Your space",
-                links: [
-                  { label: "Get started", href: "/signup" },
-                  { label: "Sign in", href: "/login" },
-                ],
-              },
-            ]}
-          />
-        </div>
-      </MotionConfig>
-    </ThemeProvider>
+            <div className={styles.steps}>
+              {[
+                {
+                  title: "Make yourself a space",
+                  description:
+                    "Create a workspace for your team or your next big idea.",
+                  icon: LayoutGrid,
+                },
+                {
+                  title: "Bring everyone along",
+                  description:
+                    "Invite your people and give every project a shared home.",
+                  icon: Users,
+                },
+                {
+                  title: "Find your next step",
+                  description:
+                    "Create your first issue. Start small, keep moving.",
+                  icon: ArrowUpRight,
+                },
+              ].map(({ title, description, icon: Icon }, i) => (
+                <Reveal key={title} delay={i * 0.08} className={styles.step}>
+                  <div className={styles.stepTop}>
+                    <span>0{i + 1}</span>
+                    <Icon size={19} />
+                  </div>
+                  <h3>{title}</h3>
+                  <p>{description}</p>
+                </Reveal>
+              ))}
+            </div>
+          </section>
+          <Reveal className={styles.closing}>
+            <div className={styles.closingSymbol}>
+              <Command size={26} />
+            </div>
+            <p>A little less noise. A little more possibility.</p>
+            <h2>
+              Make space for <Highlight>your best work.</Highlight>
+            </h2>
+            <span>Your next chapter starts with a workspace.</span>
+            <Button asChild variant="solid" size="lg">
+              <Link href="/signup">Let’s get started</Link>
+            </Button>
+            <a href="#preview" className={styles.backToPreview}>
+              Take another look <ArrowDown size={12} />
+            </a>
+          </Reveal>
+        </main>
+        <Footer
+          className={styles.footer}
+          logo={<Brand />}
+          owner="Kylro"
+          tagline="A calmer way to work, together."
+          sections={[
+            {
+              title: "Explore",
+              links: [
+                { label: "The workspace", href: "#features" },
+                { label: "How it works", href: "#how-it-works" },
+              ],
+            },
+            {
+              title: "Your space",
+              links: [
+                { label: "Get started", href: "/signup" },
+                { label: "Sign in", href: "/login" },
+              ],
+            },
+          ]}
+        />
+      </div>
+    </MotionConfig>
   );
 }

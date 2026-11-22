@@ -134,59 +134,6 @@
   }
 }
 
-.kylro-landing {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --brand: oklch(66.6% 0.179 58.318);
-  --highlight: oklch(0.476 0.114 61.907);
-  --card-edge: rgb(120 53 15 / 0.15);
-  --card-edge-hover: rgb(120 53 15 / 0.25);
-  --card-fill: rgb(255 255 255 / 0.7);
-}
-
-.kylro-landing.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --brand: oklch(75% 0.183 55.934);
-  --highlight: oklch(0.954 0.038 75.164);
-  --card-edge: rgb(255 247 237 / 0.15);
-  --card-edge-hover: rgb(255 247 237 / 0.3);
-  --card-fill: rgb(0 0 0 / 0.1);
-}
-
 @layer base {
   .kylro-landing * {
     @apply border-border outline-ring/50;
@@ -242,43 +189,4 @@
   src: url("/fonts/caveat-regular.ttf") format("truetype");
   font-weight: 400;
   font-display: swap;
-}
-.kylro-landing.light {
-  --background: #f7f5ef;
-  --foreground: #252522;
-  --card: #fcfbf7;
-  --card-foreground: #252522;
-  --popover: #fcfbf7;
-  --popover-foreground: #252522;
-  --primary: #526b57;
-  --primary-foreground: #fcfbf7;
-  --secondary: #e8eee6;
-  --muted: #f2f0e8;
-  --muted-foreground: #77756d;
-  --accent: #e8eee6;
-  --accent-foreground: #526b57;
-  --border: #d9d6cd;
-  --input: #d9d6cd;
-  --ring: #526b57;
-  --brand: #526b57;
-  --highlight: #526b57;
-  --card-edge: #d9d6cd;
-  --card-edge-hover: #b6beb0;
-  --card-fill: #fcfbf7;
-}
-.kylro-landing.dark {
-  --background: #1e211e;
-  --foreground: #f2f0e8;
-  --card: #252925;
-  --card-foreground: #f2f0e8;
-  --secondary: #333e34;
-  --muted: #292d29;
-  --muted-foreground: #aaa99e;
-  --accent: #333e34;
-  --accent-foreground: #c4d3bd;
-  --brand: #b8ccb4;
-  --highlight: #b8ccb4;
-  --card-edge: #42483f;
-  --card-edge-hover: #6b7c65;
-  --card-fill: #252925;
 }
